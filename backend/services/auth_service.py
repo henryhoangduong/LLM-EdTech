@@ -1,6 +1,9 @@
 import logging
+import random
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Optional
 
 from core.supabase_client import get_supabase_client
 from models.user import User
@@ -13,7 +16,7 @@ class AuthService:
         self.db = db
         self.supabase = get_supabase_client()
 
-    async def signup(self, email: str, password: str):
+    async def signup(self, email: str, password: str, name: Optional[str]):
         try:
             response = self.supabase.auth.sign_up(
                 {
@@ -21,10 +24,13 @@ class AuthService:
                     "password": password,
                 }
             )
+            idx = random.randint(1, 100)  # inclusive range
+            random_avatar = f"https://avatar.iran.liara.run/public/{idx}.png"
             user = User(
                 email=response.user.email,
-                id=response.user.id
-            )
+                id=response.user.id,
+                profile_pic=random_avatar,
+                name=name)
             self.db.add(user)
             self.db.flush()
             return response
@@ -38,6 +44,16 @@ class AuthService:
                 {"email": email, "password": password}
             )
             return response
+        except Exception as e:
+            logger.error(f"Error: {str(e)}")
+            raise ValueError(f"Error: {str(e)}")
+
+    async def get_user_by_id(self, id: str):
+        try:
+            statement = select(User).where(User.id == id)
+            response = await self.db.execute(statement)
+            user = response.scalar_one_or_none()
+            return user
         except Exception as e:
             logger.error(f"Error: {str(e)}")
             raise ValueError(f"Error: {str(e)}")

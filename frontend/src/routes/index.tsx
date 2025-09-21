@@ -1,9 +1,11 @@
+import useAuth from '@/hooks/api/use-auth'
 import AppLayout from '@/layout/app.layout'
 import SignIn from '@/pages/auth/SignIn'
 import SignUp from '@/pages/auth/SignUp'
+import Course from '@/pages/Course'
 import NotFound from '@/pages/error/NotFound'
 import Home from '@/pages/Home'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 
 const AUTH_ROUTES = {
   SIGN_IN: '/sign-in',
@@ -13,23 +15,54 @@ const authenticationRoutePaths = [
   { path: AUTH_ROUTES.SIGN_IN, element: <SignIn /> },
   { path: AUTH_ROUTES.SIGN_UP, element: <SignUp /> }
 ]
+
 const PROTECTED_ROUTES = {
-  HOME: '/'
+  HOME: '/',
+  COURSE: '/course/:id'
 }
 
-const protectedRoutePaths = [{ path: PROTECTED_ROUTES.HOME, element: <Home /> }]
+const protectedRoutePaths = [
+  { path: PROTECTED_ROUTES.HOME, element: <Home /> },
+  {
+    path: PROTECTED_ROUTES.COURSE,
+    element: <Course />
+  }
+]
+const isAuthRoute = (pathname: string): boolean => {
+  return Object.values(AUTH_ROUTES).includes(pathname)
+}
 
+const AuthRoute = () => {
+  const location = useLocation()
+  const _isAuthRoute = isAuthRoute(location.pathname)
+  const { data: authData, isLoading } = useAuth()
+  const user = authData
+  if (!user) return <Outlet />
+  return <Navigate to={`/`} />
+}
+const ProtectedRoute = () => {
+  const { data: authData, isLoading } = useAuth()
+  const user = authData
+  if (isLoading) {
+    return <>...loading</>
+  }
+  return user ? <Outlet /> : <Navigate to={'/sign-in'} replace />
+}
 const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {authenticationRoutePaths.map((route) => (
-          <Route key={route.path} path={route.path} element={route.element} />
-        ))}
-        <Route element={<AppLayout />}>
-          {protectedRoutePaths.map((route) => (
+        <Route element={<AuthRoute />}>
+          {authenticationRoutePaths.map((route) => (
             <Route key={route.path} path={route.path} element={route.element} />
           ))}
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
+            {protectedRoutePaths.map((route) => (
+              <Route key={route.path} path={route.path} element={route.element} />
+            ))}
+          </Route>
         </Route>
         <Route path='*' element={<NotFound />} />
       </Routes>

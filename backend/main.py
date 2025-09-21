@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from core.config import Settings
 from core.utils.logger import setup_logging
-from routes import auth_routes, classroom_routes, role_routes
+from routes import auth_routes, course_routes, role_routes
 
 dotenv_path = find_dotenv()
 if dotenv_path:
@@ -29,7 +29,7 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(auth_routes, prefix="/api/auth", tags=["Auth"])
 app.include_router(role_routes, prefix="/api/role", tags=["Roles"])
 app.include_router(
-    classroom_routes, prefix="/api/classroom", tags=["Classrooms"])
+    course_routes, prefix="/api/course", tags=["Courses"])
 
 
 settings = Settings()

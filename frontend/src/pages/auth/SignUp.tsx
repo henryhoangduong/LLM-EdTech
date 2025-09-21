@@ -7,17 +7,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import Logo from '@/components/logo/logo'
-// import GoogleOauthButton from '@/components/auth/google-oauth-button'
 import { useMutation } from '@tanstack/react-query'
-// import { registerMutationFn } from '@/lib/api'
+import { signupMutationFn } from '@/lib/api'
 import { toast } from '@/hooks/use-toast'
 import { Loader2 } from 'lucide-react'
 
 const SignUp = () => {
   const navigate = useNavigate()
-  // const { mutate, isPending } = useMutation({
-  //   mutationFn: registerMutationFn
-  // })
+  const { mutate, isPending } = useMutation({
+    mutationFn: signupMutationFn
+  })
   const formSchema = z.object({
     name: z.string().trim().min(1, {
       message: 'Name is required'
@@ -40,19 +39,22 @@ const SignUp = () => {
   })
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // if (isPending) return
-    // mutate(values, {
-    //   onSuccess: () => {
-    //     navigate('/')
-    //   },
-    //   onError: (error) => {
-    //     toast({
-    //       title: 'Error',
-    //       description: error.message,
-    //       variant: 'destructive'
-    //     })
-    //   }
-    // })
+    if (isPending) return
+    mutate(values, {
+      onSuccess: (data) => {
+        if (data.session.access_token) {
+          window.localStorage.setItem('access_token', data.session.access_token)
+        }
+        navigate('/')
+      },
+      onError: (error) => {
+        toast({
+          title: 'Error',
+          description: error.message,
+          variant: 'destructive'
+        })
+      }
+    })
   }
 
   return (
@@ -60,7 +62,7 @@ const SignUp = () => {
       <div className='flex w-full max-w-sm flex-col gap-6'>
         <Link to='/' className='flex items-center gap-2 self-center font-medium'>
           <Logo />
-          Team Sync.
+          BDA.
         </Link>
         <div className='flex flex-col gap-6'>
           <Card>
@@ -125,8 +127,8 @@ const SignUp = () => {
                           )}
                         />
                       </div>
-                      <Button type='submit' disabled={false} className='w-full'>
-                        {false && <Loader2 className='animate-spin' />}
+                      <Button type='submit' disabled={isPending} className='w-full'>
+                        {isPending && <Loader2 className='animate-spin' />}
                         Sign up
                       </Button>
                     </div>

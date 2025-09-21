@@ -8,19 +8,20 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input'
 // import Logo from '@/components/logo'
 // import GoogleOauthButton from '@/components/auth/google-oauth-button'
-// import { useMutation } from '@tanstack/react-query'
-// import { loginMutationFn } from '@/lib/api'
+
 import { toast } from '@/hooks/use-toast'
 import { Loader2 } from 'lucide-react'
 import Logo from '@/components/logo/logo'
+import { loginMutationFn } from '@/lib/api'
+import { useMutation } from '@tanstack/react-query'
 
 const SignIn = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const returnUrl = searchParams.get('returnUrl')
-  // const { mutate, isPending } = useMutation({
-  //   mutationFn: loginMutationFn
-  // })
+  const { mutate, isPending } = useMutation({
+    mutationFn: loginMutationFn
+  })
+
   const formSchema = z.object({
     email: z.string().trim().email('Invalid email address').min(1, {
       message: 'Workspace name is required'
@@ -39,21 +40,22 @@ const SignIn = () => {
   })
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // if (isPending) return
-    // mutate(values, {
-    //   onSuccess: (data) => {
-    //     const user = data.user
-    //     const decodedUrl = returnUrl ? decodeURIComponent(returnUrl) : null
-    //     navigate(decodedUrl || `/workspace/${user.currentWorkspace}`)
-    //   },
-    //   onError: (error) => {
-    //     toast({
-    //       title: 'Error',
-    //       description: error.message,
-    //       variant: 'destructive'
-    //     })
-    //   }
-    // })
+    if (isPending) return
+    mutate(values, {
+      onSuccess: (data) => {
+        if (data.session.access_token) {
+          window.localStorage.setItem('access_token', data.session.access_token)
+        }
+        navigate('/')
+      },
+      onError: (error) => {
+        toast({
+          title: 'Error',
+          description: error.message,
+          variant: 'destructive'
+        })
+      }
+    })
   }
 
   return (

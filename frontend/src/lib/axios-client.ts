@@ -7,7 +7,16 @@ const options = {
   timeout: 10000
 }
 const API = axios.create(options)
-
+API.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('access_token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  (error) => Promise.reject(error)
+)
 API.interceptors.response.use(
   (response) => {
     return response

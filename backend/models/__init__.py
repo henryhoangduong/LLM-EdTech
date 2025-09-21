@@ -1,6 +1,6 @@
-from .classroom import Classroom
+from .cousre import Course
 from .role import Role
 from .user import User
-from .user_classroom import UserClassroom
+from .user_course import UserCourse
 
-__all__ = ["User", "Role", "Classroom", "UserClassroom"]
+__all__ = ["User", "Role", "Course", "UserCourse"]

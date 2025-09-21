@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { EllipsisIcon, Loader, LogOut } from 'lucide-react'
+import { EllipsisIcon, Loader, LogOut, SettingsIcon } from 'lucide-react'
 import {
   Sidebar,
   SidebarHeader,
@@ -24,33 +24,21 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import Logo from '../logo/logo'
-// import LogoutDialog from './logout-dialog'
-// import { WorkspaceSwitcher } from './workspace-switcher'
-// import { NavMain } from './nav-main'
-// import { NavProjects } from './nav-projects'
 import { Separator } from '../ui/separator'
-// import useWorkspaceId from '@/hooks/use-workspace-id'
-import { useAuthContext } from '@/context/auth-provider'
 import { AvatarImage } from '@radix-ui/react-avatar'
-
+import { LayoutDashboard } from 'lucide-react'
+import LogoutDialog from './logout-dialog'
+import { useAuthContext } from '@/context/auth-provider'
 const Asidebar = () => {
-  //   const { user, isLoading } = useAuthContext()
-  const isLoading = false
   const { open } = useSidebar()
-  const user = {
-    name: 'Henry Hoang Duong',
-    profilePicture: '',
-    email: 'henryhoangduong@gmail.com'
-  }
-  //   const workspaceId = useWorkspaceId()
-
+  const { user, isLoading } = useAuthContext()
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     <>
       <Sidebar collapsible='icon'>
         <SidebarHeader className='!py-0 dark:bg-background'>
-          <div className='flex h-[50px] items-center justify-start w-full px-1'>
+          <div className='flex h-[48px] items-center justify-start w-full px-1 border-b'>
             <Logo />
             {open && (
               <Link to='' className='hidden md:flex ml-2 items-center gap-2 self-center font-medium'>
@@ -59,14 +47,23 @@ const Asidebar = () => {
             )}
           </div>
         </SidebarHeader>
-        <SidebarContent className=' !mt-0 dark:bg-background'>
+        <SidebarContent className='!mt-0 dark:bg-background'>
           <SidebarGroup className='!py-0'>
             <SidebarGroupContent>
-              {/* <WorkspaceSwitcher /> */}
-              <Separator />
-              {/* <NavMain /> */}
-              <Separator />
-              {/* <NavProjects /> */}
+              <SidebarMenu className='mt-5'>
+                <SidebarMenuItem>
+                  <SidebarMenuButton>
+                    <LayoutDashboard />
+                    <span>Dashboard</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton>
+                    <SettingsIcon />
+                    <span>Settings</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
@@ -83,14 +80,15 @@ const Asidebar = () => {
                       className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
                     >
                       <Avatar className='h-8 w-8 rounded-full'>
-                        <AvatarImage src={user?.profilePicture || ''} />
+                        <AvatarImage src={user?.profile_pic || ''} />
                         <AvatarFallback className='rounded-full border border-gray-500'>
-                          {user?.name.split(' ')[0].charAt(0)}
-                          {user?.name.split(' ')[1].charAt(0)}
+                          {user?.name && user?.name && user?.name.split(' ')[0].charAt(0)}
+                          {user?.name && user?.name.split(' ')[1].charAt(0)}
+                          {!user?.name && 'N'}
                         </AvatarFallback>
                       </Avatar>
                       <div className='grid flex-1 text-left text-sm leading-tight'>
-                        <span className='truncate font-semibold'>{user?.name} </span>
+                        <span className='truncate font-semibold'>{user?.name || 'User Name'} </span>
                         <span className='truncate text-xs'>{user?.email}</span>
                       </div>
                       <EllipsisIcon className='ml-auto size-4' />
@@ -116,8 +114,7 @@ const Asidebar = () => {
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>
-
-      {/* <LogoutDialog isOpen={isOpen} setIsOpen={setIsOpen} /> */}
+      <LogoutDialog isOpen={isOpen} setIsOpen={setIsOpen} />
     </>
   )
 }

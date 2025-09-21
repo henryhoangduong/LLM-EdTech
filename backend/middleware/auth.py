@@ -1,8 +1,10 @@
-from fastapi import Depends, HTTPException, Request, status
-from typing import Optional
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from core.supabase_client import get_supabase_client
 import logging
+from typing import Optional
+
+from fastapi import Depends, HTTPException, Request, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+
+from core.supabase_client import get_supabase_client
 
 logger = logging.getLogger(__name__)
 
