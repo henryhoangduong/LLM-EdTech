@@ -1,4 +1,4 @@
-import { User } from '@/types/types';
+import { User } from '@/types/types'
 import API from './axios-client'
 //*********************************************************************
 //***************************** AUTH **********************************
@@ -26,7 +26,29 @@ export const logoutMutationFn = async () => {
   const response = await API.post('/auth/signout')
   return response.data
 }
+
 export const getCurrentUserQueryFn = async (): Promise<User> => {
   const response = await API.get(`/auth/currentUser`)
+  return response.data
+}
+
+export const getCourseByIdQueryFn = async (id: string): Promise<any> => {
+  const response = await API.get(`/course/${id}`)
+  return response.data
+}
+
+export const createCourseMutationFn = async ({
+  name,
+  description
+}: {
+  name: string
+  description?: string
+}): Promise<any> => {
+  const response = await API.post(`/course`, { name: name, description: description })
+  return response.data
+}
+
+export const getCoursesQueryFn = async () => {
+  const response = await API.get(`/course`)
   return response.data
 }

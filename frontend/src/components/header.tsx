@@ -16,10 +16,8 @@ const Header = () => {
   const pathname = location.pathname
 
   const getPageLabel = (pathname: string) => {
-    if (pathname.includes('/project/')) return 'Project'
-    if (pathname.includes('/settings')) return 'Settings'
-    if (pathname.includes('/tasks')) return 'Tasks'
-    if (pathname.includes('/members')) return 'Members'
+    if (pathname.includes('/course/')) return 'Course'
+
     return null // Default label
   }
 
@@ -32,13 +30,10 @@ const Header = () => {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem className='hidden md:block text-[15px]'>
-              {pageHeading ? (
-                <BreadcrumbLink asChild>{/* <Link to={`/workspace/${workspaceId}`}>Dashboard</Link> */}</BreadcrumbLink>
-              ) : (
-                <BreadcrumbPage className='line-clamp-1 '>Dashboard</BreadcrumbPage>
-              )}
+              <BreadcrumbPage className='line-clamp-1'>
+                <Link to={'/'}>Dashboard</Link>
+              </BreadcrumbPage>
             </BreadcrumbItem>
-
             {pageHeading && (
               <>
                 <BreadcrumbSeparator className='hidden md:block' />

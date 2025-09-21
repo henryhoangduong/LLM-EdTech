@@ -24,7 +24,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import Logo from '../logo/logo'
-import { Separator } from '../ui/separator'
 import { AvatarImage } from '@radix-ui/react-avatar'
 import { LayoutDashboard } from 'lucide-react'
 import LogoutDialog from './logout-dialog'
@@ -54,13 +53,13 @@ const Asidebar = () => {
                 <SidebarMenuItem>
                   <SidebarMenuButton>
                     <LayoutDashboard />
-                    <span>Dashboard</span>
+                    <Link to='/'>Dashboard</Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton>
                     <SettingsIcon />
-                    <span>Settings</span>
+                    <Link to={'/settings'}>Settings</Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>

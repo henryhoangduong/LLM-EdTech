@@ -8,17 +8,20 @@ import { toast } from '@/hooks/use-toast'
 import DocumentTable from '@/components/document/document-table'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useCourse } from '@/hooks/api/use-coure'
+import { useParams } from 'react-router-dom'
 
 const Course = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const handleModal = () => {
     setIsModalOpen(!isModalOpen)
   }
+
   const { mutate, isPending } = useMutation({
     // mutationFn: ingestionMutationFn
   })
   const queryClient = useQueryClient()
-
+  const { id } = useParams<{ id: string }>()
   const onSubmit = async (values: FileList) => {
     if (isPending) return
     mutate(values, {
@@ -40,6 +43,7 @@ const Course = () => {
       }
     })
   }
+  const course = useCourse(id || '')
   return (
     <div className='w-full gap-5 flex flex-col  p-5'>
       <header className='w-full flex'>

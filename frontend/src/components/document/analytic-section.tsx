@@ -12,7 +12,7 @@ const AnalyticSection = () => {
   const isLoading = false
   const data = []
   return (
-    <div className='flex md:flex-row sm:flex-col justify-between'>
+    <div className='flex md:flex-row sm:flex-col justify-between items-center'>
       <Card className='max-w-[350px] w-full'>
         <CardHeader className='flex flex-row items-center  gap-2'>
           <Database className='text-muted-foreground' />

@@ -1,30 +1,34 @@
-import { DataTable, ClassRoom } from '@/components/ClassTable'
+import { DataTable, Course } from '@/components/ClassTable'
 import { columns } from '../components/ClassTable'
 import SummaryCard from '@/components/SummaryCard'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuthContext } from '@/context/auth-provider'
-function getData(): ClassRoom[] {
-  return [
-    {
-      id: '728ed52f',
-      name: 'Business Data Analysis',
-      date: 'pending'
-    },
-    {
-      id: '728ed52f',
-      name: 'Data Structure And Algorithm',
-      date: 'pending'
-    }
-  ]
-}
-const Home = () => {
-  const data = getData()
-  const { user } = useAuthContext()
+import { Button } from '@/components/ui/button'
+import { PlusIcon } from 'lucide-react'
+import { useState } from 'react'
+import CreateNewCourseDialog from '@/components/CreateNewCourseDialog'
+import { useQuery } from '@tanstack/react-query'
+import { getCoursesQueryFn } from '@/lib/api'
 
+const Home = () => {
+  const { user } = useAuthContext()
+  const { data, isLoading } = useQuery({
+    queryKey: ['course'],
+    queryFn: getCoursesQueryFn
+  })
+
+  const [isNewCourseFormOpen, setIsNewCourseFormOpen] = useState(false)
+  const handleModal = () => {
+    setIsNewCourseFormOpen(!isNewCourseFormOpen)
+  }
   return (
     <div className='w-full gap-5 flex flex-col  p-5'>
-      <header className='p-4 w-full'>
+      <header className='p-4 w-full flex justify-between'>
         <p className='font-medium text-2xl'>👋 Welcome back {user?.name as string}!</p>
+        <Button onClick={handleModal}>
+          <PlusIcon />
+          <span>New Course</span>
+        </Button>
       </header>
       <Card className='w-full justify-between'>
         <CardHeader>
@@ -44,10 +48,9 @@ const Home = () => {
             <p>Courses</p>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <DataTable columns={columns} data={data} />
-        </CardContent>
+        <CardContent>{!isLoading && <DataTable columns={columns} data={data} />}</CardContent>
       </Card>
+      <CreateNewCourseDialog isOpen={isNewCourseFormOpen} onClose={handleModal} />
     </div>
   )
 }

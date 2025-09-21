@@ -1,4 +1,4 @@
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -17,7 +17,6 @@ import { useMutation } from '@tanstack/react-query'
 
 const SignIn = () => {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const { mutate, isPending } = useMutation({
     mutationFn: loginMutationFn
   })

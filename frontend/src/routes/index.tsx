@@ -5,7 +5,7 @@ import SignUp from '@/pages/auth/SignUp'
 import Course from '@/pages/Course'
 import NotFound from '@/pages/error/NotFound'
 import Home from '@/pages/Home'
-import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 
 const AUTH_ROUTES = {
   SIGN_IN: '/sign-in',
@@ -33,9 +33,7 @@ const isAuthRoute = (pathname: string): boolean => {
 }
 
 const AuthRoute = () => {
-  const location = useLocation()
-  const _isAuthRoute = isAuthRoute(location.pathname)
-  const { data: authData, isLoading } = useAuth()
+  const { data: authData } = useAuth()
   const user = authData
   if (!user) return <Outlet />
   return <Navigate to={`/`} />

@@ -2,33 +2,29 @@ import { ColumnDef, useReactTable, getCoreRowModel, flexRender } from '@tanstack
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 import { useNavigate } from 'react-router-dom'
 
-export type ClassRoom = {
+export type Course = {
   id: string
   name: string
-  date: string
+  created_at: string
 }
 
-export const payments: ClassRoom[] = [
+export const columns: ColumnDef<Course>[] = [
   {
-    id: '728ed52f',
-    name: 'name',
-    date: 'pending'
+    accessorKey: 'id',
+    header: 'ID'
   },
-  {
-    id: '728ed52f',
-    name: 'name',
-    date: 'pending'
-  }
-]
-
-export const columns: ColumnDef<ClassRoom>[] = [
   {
     accessorKey: 'name',
     header: 'Name'
   },
   {
-    accessorKey: 'date',
-    header: 'Date'
+    accessorKey: 'created_at',
+    header: 'Created At',
+    cell: ({ row }) => {
+      const raw = row.original.created_at
+      const dt = new Date(raw)
+      return dt.toISOString().split('T')[0]
+    }
   }
 ]
 interface DataTableProps<TData, TValue> {
@@ -64,21 +60,23 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    className='cursor-pointer'
-                    onClick={() => {
-                      handleNav(row.id)
-                    }}
-                    key={cell.id}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
+            table.getRowModel().rows.map((row) => {
+              return (
+                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      className='cursor-pointer'
+                      onClick={() => {
+                        handleNav(row.original.id)
+                      }}
+                      key={cell.id}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              )
+            })
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className='h-24 text-center'>
