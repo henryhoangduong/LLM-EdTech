@@ -40,7 +40,8 @@ async def get_course_by_id(id: int, courseService: CourseService = Depends(get_c
 async def create_course(createcourseRequest: CreateCourseRequest, courseService: CourseService = Depends(get_course_service)):
     try:
         response = await courseService.create_course(
-            name=createcourseRequest.name
+            name=createcourseRequest.name,
+            description=createcourseRequest.description
         )
         return response
     except Exception as e:

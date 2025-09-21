@@ -34,9 +34,9 @@ class CourseService:
     async def get_course_by_teacher(self, teacher_id: str):
         pass
 
-    async def create_course(self, name: str):
+    async def create_course(self, name: str, description: str):
         try:
-            course = course(name=name)
+            course = Course(name=name, description=description)
             self.db.add(course)
             await self.db.flush()
             return course
