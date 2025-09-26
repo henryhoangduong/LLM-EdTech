@@ -1,12 +1,11 @@
 import logging
 import random
-
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
 
 from core.supabase_client import get_supabase_client
 from models.user import User
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
 

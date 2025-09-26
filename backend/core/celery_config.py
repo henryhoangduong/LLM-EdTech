@@ -4,9 +4,9 @@ import os
 import torch
 from celery import Celery
 from celery.signals import worker_init, worker_shutdown, worker_shutting_down
-from dotenv import load_dotenv
 from core.config import settings
-import logging
+from dotenv import load_dotenv
+
 logger = logging.getLogger(__name__)
 load_dotenv()
 
@@ -52,7 +52,10 @@ def create_celery_app():
 
     @worker_init.connect
     def init_worker(**kwargs):
-        logger.info("Initializing Celery worker...")
+        logger.info("🚀 Initializing Celery worker...")
+
+    @worker_shutting_down.connect
+    def worker_shutting_down_handler(**kwargs):
         if torch.cuda.is_available():
             try:
                 torch.cuda.empty_cache()
@@ -60,7 +63,11 @@ def create_celery_app():
             except Exception as e:
                 logger.error(f"Error clearing CUDA cache: {e}")
 
-    @worker_shutting_down.connect
-    def worker_shutting_down_handler(**kwargs):
-        logger.info("Celery worker is shutting down...")
-        
+    @worker_shutdown.connect
+    def worker_shutdown_handler(**kwargs):
+        logger.info("Celery worker shutdown complete")
+
+    return app
+
+
+celery_app = create_celery_app()

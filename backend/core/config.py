@@ -28,6 +28,37 @@ else:
         "Using default environment variables or system environment variables")
 
 
+class LLMConfig(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+    provider: str = Field(default="openai")
+    model_nam: str = Field(default="gpt-4")
+    api_key: str = Field(
+        default_factory=lambda: os.getenv("OPENAI_API_KEY", ""),
+        description="OpenAI API key from environment variables",
+    )
+    base_url: str = Field(
+        default="http://localhost:11434",
+        description="Base URL for LLM service (e.g., Ollama server)",
+    )
+    temperature: float = Field(default=0.0)
+    streaming: bool = Field(default=True)
+    max_tokens: Optional[int] = None
+    additional_params: Dict[str, Any] = Field(default_factory=dict)
+
+
+class StorageSettings(BaseSettings):
+    """Storage configuration settings"""
+    provider: str = Field(
+        default="local",
+        description="Storage provider type: 'local', 'minio', or 'supabase'",
+    )
+    supabase_bucket: Optional[str] = Field(
+        default="documents",
+        description="Supabase storage bucket name",
+        env="SUPABASE_STORAGE_BUCKET",
+    )
+
+
 class PostgresSettings(BaseSettings):
     """PostgreSQL database settings"""
 
@@ -64,9 +95,50 @@ class PostgresSettings(BaseSettings):
         return f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}"
 
 
+class PathConfig(BaseModel):
+    base_dir: Path = Field(default_factory=lambda: BASE_DIR)
+    faiss_index_dir: Path = Field(default="vector_stores/faiss_index")
+    vector_store_dir: Path = Field(default="vector_stores")
+    upload_dir: Path = Field(default="uploads")
+    temp_dir: Path = Field(default="temp")
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.faiss_index_dir = self.base_dir / self.faiss_index_dir
+        self.vector_store_dir = self.base_dir / self.vector_store_dir
+        self.upload_dir = self.base_dir / self.upload_dir
+        self.temp_dir = self.base_dir / self.temp_dir
+
+        # Create directories if they don't exist
+        for path in [
+            self.faiss_index_dir,
+            self.vector_store_dir,
+            self.upload_dir,
+            self.temp_dir,
+        ]:
+            path.mkdir(parents=True, exist_ok=True)
+            logger.info(f"Ensured directory exists: {path}")
+
+
 class Settings(BaseSettings):
-    postgres: PostgresSettings = PostgresSettings()
+    postgres: PostgresSettings = Field(default_factory=PostgresSettings)
     frontend_origin: str = os.getenv("FRONTEND_ORIGIN")
+    storage: StorageSettings = Field(default_factory=StorageSettings)
+    paths: PathConfig = Field(default_factory=PathConfig)
+
+    @classmethod
+    def load_from_yaml(cls, config_path: Optional[Path] = None) -> "Settings":
+        config_file = BASE_DIR/"config.yaml"
+        print("config_file: ", config_file)
+        if not config_file.exists():
+            raise FileNotFoundError(
+                f"Config file not found at {config_file}. "
+                "Please ensure config.yaml exists in the project root directory."
+            )
+        logger.info(f"Loading configuration from {config_file}")
+        with open(config_file, "r") as f:
+            config_data = yaml.safe_load(f) or {}
+        return cls(**config_data)
 
 
-settings = Settings()
+settings = Settings.load_from_yaml()

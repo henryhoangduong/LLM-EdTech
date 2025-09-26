@@ -43,7 +43,7 @@ class MetaDataType(BaseModel):
 
 class HenryDoc(BaseModel):
     id: str
-    documents: Document
+    documents: List[Document]
     metadata: MetaDataType
 
     @classmethod
