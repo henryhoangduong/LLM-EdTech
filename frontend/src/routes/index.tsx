@@ -1,3 +1,4 @@
+import Loading from '@/components/Loading'
 import useAuth from '@/hooks/api/use-auth'
 import AppLayout from '@/layout/app.layout'
 import SignIn from '@/pages/auth/SignIn'
@@ -28,9 +29,6 @@ const protectedRoutePaths = [
     element: <Course />
   }
 ]
-const isAuthRoute = (pathname: string): boolean => {
-  return Object.values(AUTH_ROUTES).includes(pathname)
-}
 
 const AuthRoute = () => {
   const { data: authData } = useAuth()
@@ -42,7 +40,7 @@ const ProtectedRoute = () => {
   const { data: authData, isLoading } = useAuth()
   const user = authData
   if (isLoading) {
-    return <>...loading</>
+    return <Loading />
   }
   return user ? <Outlet /> : <Navigate to={'/sign-in'} replace />
 }

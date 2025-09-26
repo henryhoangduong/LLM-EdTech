@@ -46,12 +46,15 @@ const Course = () => {
   const course = useCourse(id || '')
   return (
     <div className='w-full gap-5 flex flex-col  p-5'>
-      <header className='w-full flex'>
+      <header className='w-full flex justify-between'>
         <p className='font-medium text-2xl'>Documents</p>
-        <Button onClick={handleModal} className='w-max ml-auto'>
-          <PlusIcon />
-          <span>Upload Document</span>{' '}
-        </Button>
+        <div className='gap-2 flex'>
+          <Button>Chat</Button>
+          <Button onClick={handleModal} className='w-max ml-auto'>
+            <PlusIcon />
+            <span>Upload Document</span>{' '}
+          </Button>
+        </div>
       </header>
       <div className='flex flex-col gap-6 '>
         <AnalyticSection />

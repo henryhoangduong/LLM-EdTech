@@ -6,10 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-// import Logo from '@/components/logo'
-// import GoogleOauthButton from '@/components/auth/google-oauth-button'
 
-import { toast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
 import Logo from '@/components/logo/logo'
 import { loginMutationFn } from '@/lib/api'
@@ -42,16 +40,24 @@ const SignIn = () => {
     if (isPending) return
     mutate(values, {
       onSuccess: (data) => {
+        console.log('data: ', data)
         if (data.session.access_token) {
           window.localStorage.setItem('access_token', data.session.access_token)
+        }
+        if (!data) {
+          toast.error('Error', {
+            description: 'Failed login'
+          })
+        } else {
+          toast.error('Successful', {
+            description: 'Successful login'
+          })
         }
         navigate('/')
       },
       onError: (error) => {
-        toast({
-          title: 'Error',
-          description: error.message,
-          variant: 'destructive'
+        toast.error('Error', {
+          description: 'Failed login'
         })
       }
     })
@@ -116,8 +122,8 @@ const SignIn = () => {
                           )}
                         />
                       </div>
-                      <Button disabled={false} type='submit' className='w-full'>
-                        {false && <Loader2 className='animate-spin' />}
+                      <Button disabled={isPending} type='submit' className='w-full'>
+                        {isPending && <Loader2 className='animate-spin' />}
                         Login
                       </Button>
                     </div>
