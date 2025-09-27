@@ -2,11 +2,12 @@ import logging
 import os
 from contextlib import asynccontextmanager
 
-from core.config import Settings
-from core.utils.logger import setup_logging
 from dotenv import find_dotenv, load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from core.config import Settings
+from core.utils.logger import setup_logging
 from routes import auth_routes, course_routes, ingestion_routes, role_routes
 
 dotenv_path = find_dotenv()
@@ -21,6 +22,9 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logger.info("=" * 50)
+    logger.info("Starting BDA Application")
+    logger.info("=" * 50)
     yield
 
 app = FastAPI(lifespan=lifespan)

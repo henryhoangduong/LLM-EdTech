@@ -1,11 +1,12 @@
 import logging
 
-from core.database import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from core.database import get_db
 from middleware.auth import get_current_user
 from schemas.auth import SignInRequest, SignUpRequest
 from services.auth_service import AuthService
-from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
 auth_routes = APIRouter()

@@ -1,9 +1,10 @@
 import logging
 
-from core.supabase_client import get_supabase_client
-from models import Course
 from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from core.supabase_client import get_supabase_client
+from models import Course
 
 logger = logging.getLogger(__name__)
 

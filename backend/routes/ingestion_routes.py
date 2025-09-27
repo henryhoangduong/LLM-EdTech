@@ -2,8 +2,9 @@ import asyncio
 import logging
 from typing import Any, Dict, List
 
-from core.database import get_db
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+
+from core.database import get_db
 from middleware.auth import get_current_user
 from services.ingestion.ingestion_service import DocumentIngestionService
 
@@ -14,7 +15,7 @@ db = get_db()
 ingestion_service = DocumentIngestionService()
 
 
-@ingestion_routes.post("/ingestion")
+@ingestion_routes.post("")
 async def ingest_document(
         files: List[UploadFile] = File(...),
     folder_path: str = Query(
