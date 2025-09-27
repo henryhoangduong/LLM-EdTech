@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useCourse } from '@/hooks/api/use-coure'
 import { useParams } from 'react-router-dom'
+import { ingestionMutationFn } from '@/lib/api'
 
 const Course = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -18,7 +19,7 @@ const Course = () => {
   }
 
   const { mutate, isPending } = useMutation({
-    // mutationFn: ingestionMutationFn
+    mutationFn: ingestionMutationFn
   })
   const queryClient = useQueryClient()
   const { id } = useParams<{ id: string }>()
