@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Separator } from './ui/separator'
 import { Link, useLocation } from 'react-router-dom'
+import { Input } from './ui/input'
 
 const Header = () => {
   const location = useLocation()
@@ -44,6 +45,9 @@ const Header = () => {
             )}
           </BreadcrumbList>
         </Breadcrumb>
+      </div>
+      <div className='w-1/2 px-5'>
+        <Input placeholder='Search....' />
       </div>
     </header>
   )

@@ -1,4 +1,4 @@
-import Loading from '@/components/Loading'
+import Loading from '@/components/loading'
 import useAuth from '@/hooks/api/use-auth'
 import AppLayout from '@/layout/app.layout'
 import SignIn from '@/pages/auth/SignIn'

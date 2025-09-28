@@ -15,7 +15,15 @@ export const columns: ColumnDef<Course>[] = [
   },
   {
     accessorKey: 'name',
-    header: 'Name'
+    header: 'Name',
+    cell: ({ row }) => {
+      const name = row.original.name
+      const firstLetter = name.charAt(0)
+      const firstLetterCap = firstLetter.toUpperCase()
+      const remainingLetters = name.slice(1)
+      const capitalizedWord = firstLetterCap + remainingLetters
+      return <span className='font-medium'>{capitalizedWord}</span>
+    }
   },
   {
     accessorKey: 'created_at',

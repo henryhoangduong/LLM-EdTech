@@ -12,7 +12,8 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarRail,
-  useSidebar
+  useSidebar,
+  SidebarGroupLabel
 } from '@/components/ui/sidebar'
 import {
   DropdownMenu,
@@ -47,9 +48,10 @@ const Asidebar = () => {
           </div>
         </SidebarHeader>
         <SidebarContent className='!mt-0 dark:bg-background'>
-          <SidebarGroup className='!py-0'>
+          <SidebarGroup className='!py-0 mt-5'>
+            <SidebarGroupLabel>Main</SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu className='mt-5'>
+              <SidebarMenu className=''>
                 <SidebarMenuItem>
                   <SidebarMenuButton>
                     <LayoutDashboard />

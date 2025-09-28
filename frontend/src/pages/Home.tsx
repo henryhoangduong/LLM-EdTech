@@ -1,14 +1,15 @@
-import { DataTable, Course } from '@/components/ClassTable'
-import { columns } from '../components/ClassTable'
-import SummaryCard from '@/components/SummaryCard'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { DataTable, Course } from '@/components/class-table'
+import { columns } from '../components/class-table'
+import SummaryCard from '@/components/summary-card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuthContext } from '@/context/auth-provider'
 import { Button } from '@/components/ui/button'
 import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
-import CreateNewCourseDialog from '@/components/CreateNewCourseDialog'
+import CreateNewCourseDialog from '@/components/create-new-course-dialog'
 import { useQuery } from '@tanstack/react-query'
 import { getCoursesQueryFn } from '@/lib/api'
+import { Notebook, Scroll, Landmark } from 'lucide-react'
 
 const Home = () => {
   const { user } = useAuthContext()
@@ -16,7 +17,6 @@ const Home = () => {
     queryKey: ['course'],
     queryFn: getCoursesQueryFn
   })
-
   const [isNewCourseFormOpen, setIsNewCourseFormOpen] = useState(false)
   const handleModal = () => {
     setIsNewCourseFormOpen(!isNewCourseFormOpen)
@@ -36,20 +36,35 @@ const Home = () => {
         </CardHeader>
         <CardContent>
           <div className='flex w-full justify-between'>
-            <SummaryCard bg='#DDFCE6' titleColor='#3DDE4F' title='Lessons' desc='Lessons' number={'20'} />
-            <SummaryCard bg='#FEE3E4' titleColor={'#F65A7F'} title='Assignments' desc='Assignments' number={'20'} />
-            <SummaryCard bg='#FEF3DE' titleColor={'#FE9473'} title='Exercises' desc='Exercise' number={'20'} />
+            <SummaryCard title='Lessons' desc='Lessons' number={'20'} icon={<Notebook size={16} />} />
+            <SummaryCard title='Assignments' desc='Assignments' number={'20'} icon={<Scroll size={16} />} />
+            <SummaryCard title='Exercises' desc='Exercise' number={'20'} icon={<Landmark size={16} />} />
           </div>
         </CardContent>
       </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <p>Courses</p>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>{!isLoading && <DataTable columns={columns} data={data} />}</CardContent>
-      </Card>
+      <div className='w-full flex gap-5'>
+        <div className='w-2/3'>
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <p>Courses</p>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>{!isLoading && <DataTable columns={columns} data={data} />}</CardContent>
+          </Card>
+        </div>
+        <div className='flex-1'>
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                <p>Recent Classes</p>
+              </CardTitle>
+              <CardDescription>Recent classes that you have joined</CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      </div>
+
       <CreateNewCourseDialog isOpen={isNewCourseFormOpen} onClose={handleModal} />
     </div>
   )
