@@ -3,9 +3,10 @@ import useAuth from '@/hooks/api/use-auth'
 import AppLayout from '@/layout/app.layout'
 import SignIn from '@/pages/auth/SignIn'
 import SignUp from '@/pages/auth/SignUp'
-import Course from '@/pages/Course'
+import Course from '@/pages/course/course-page'
+import Coureses from '@/pages/course/courses-page'
 import NotFound from '@/pages/error/NotFound'
-import Home from '@/pages/Home'
+import Home from '@/pages/home-page'
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 
 const AUTH_ROUTES = {
@@ -19,7 +20,8 @@ const authenticationRoutePaths = [
 
 const PROTECTED_ROUTES = {
   HOME: '/',
-  COURSE: '/course/:id'
+  COURSE: '/course/:id',
+  COURSES: '/courses'
 }
 
 const protectedRoutePaths = [
@@ -27,6 +29,10 @@ const protectedRoutePaths = [
   {
     path: PROTECTED_ROUTES.COURSE,
     element: <Course />
+  },
+  {
+    path: PROTECTED_ROUTES.COURSES,
+    element: <Coureses />
   }
 ]
 

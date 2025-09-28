@@ -40,13 +40,13 @@ const AnalyticSection = () => {
           <p className='text-muted-foreground'> days ago</p>
         </CardContent>
       </Card>
-      <Card className='max-w-[350px] w-full'>
+      <Card className='max-w-[350px] w-full '>
         <CardHeader className='flex flex-row items-center  gap-2'>
           <TimerIcon className='text-muted-foreground' />
 
           <div>
             <CardTitle>Total chunks</CardTitle>
-            <CardDescription>Total number of chunks aftering chunking</CardDescription>
+            <CardDescription>Total number of chunks</CardDescription>
           </div>
         </CardHeader>
         <CardContent className='flex flex-row items-end gap-2'>

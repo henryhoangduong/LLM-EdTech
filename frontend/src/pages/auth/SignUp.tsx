@@ -9,8 +9,8 @@ import { Input } from '@/components/ui/input'
 import Logo from '@/components/logo/logo'
 import { useMutation } from '@tanstack/react-query'
 import { signupMutationFn } from '@/lib/api'
-import { toast } from '@/hooks/use-toast'
 import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 const SignUp = () => {
   const navigate = useNavigate()
@@ -45,13 +45,12 @@ const SignUp = () => {
         if (data.session.access_token) {
           window.localStorage.setItem('access_token', data.session.access_token)
         }
+        
         navigate('/')
       },
       onError: (error) => {
-        toast({
-          title: 'Error',
-          description: error.message,
-          variant: 'destructive'
+        toast.error('Error', {
+          description: 'Failed login'
         })
       }
     })

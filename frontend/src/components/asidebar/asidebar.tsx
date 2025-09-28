@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { EllipsisIcon, Loader, LogOut, SettingsIcon } from 'lucide-react'
+import { School } from 'lucide-react'
 import {
   Sidebar,
   SidebarHeader,
@@ -58,6 +59,19 @@ const Asidebar = () => {
                     <Link to='/'>Dashboard</Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton>
+                    <School />
+                    <Link to='/courses'>Courses</Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+          <SidebarGroup className='!py-0 '>
+            <SidebarGroupLabel>Main</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu className=''>
                 <SidebarMenuItem>
                   <SidebarMenuButton>
                     <SettingsIcon />
