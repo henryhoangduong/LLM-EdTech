@@ -267,8 +267,23 @@ class PostgresDB(DatabaseService):
         finally:
             session.close()
 
-    def delete_documents(self, document_ids):
-        return super().delete_documents(document_ids)
+    def delete_documents(self, document_ids: List[str]):
+        try:
+            session = self._Session()
+            result = (
+                session.query(SQLDocument).filter(
+                    SQLDocument.id.in_(document_ids)
+                )
+                .delete(synchronize_session=False)
+            )
+            session.commit()
+            return result > 0
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Failed to delete documents: {e}")
+            return False
+        finally:
+            session.close()
 
     def clear_database(self):
         return super().clear_database()
