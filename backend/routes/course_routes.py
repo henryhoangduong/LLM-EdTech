@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import get_db
@@ -13,9 +13,14 @@ def get_course_service(db: AsyncSession = Depends(get_db)) -> CourseService:
 
 
 @course_routes.get("")
-async def get_courses(courseService: CourseService = Depends(get_course_service)):
+async def get_courses(courseService: CourseService = Depends(get_course_service),
+                      page: int = Query(1, ge=1, description="Page number"),
+                      limit: int = Query(10, ge=1, le=100, description="Items per page"),):
     try:
-        response = await courseService.get_courses()
+        skip = (page - 1) * limit
+        print("skip: ", skip)
+        print("limit: ", limit)
+        response = await courseService.get_courses(skip=skip, limit=limit)
         return response
     except Exception as e:
         raise HTTPException(

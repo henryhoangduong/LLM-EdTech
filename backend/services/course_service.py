@@ -1,6 +1,6 @@
 import logging
 
-from sqlalchemy import insert, select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.supabase_client import get_supabase_client
@@ -44,10 +44,19 @@ class CourseService:
             logger.error("Error: ", str(e))
             raise ValueError("Error: ", str(e))
 
-    async def get_courses(self):
+    async def get_courses(self, skip: int = 0, limit: int = 10):
         try:
-            response = await self.db.execute(select(Course))
-            return response.scalars().all()
+            result = await self.db.execute(select(Course).offset(skip).limit(limit))
+            total_result = await self.db.execute(select(func.count()).select_from(Course))
+            total = total_result.scalar()
+            courses = result.scalars().all()
+            return {
+                "items": courses,
+                "total": total,
+                "page": (skip // limit) + 1,
+                "page_size": limit,
+                "pages": (total + limit - 1) // limit  # ceiling division
+            }
         except Exception as e:
             logger.error("Error: ", str(e))
             raise ValueError("Error: ", str(e))
