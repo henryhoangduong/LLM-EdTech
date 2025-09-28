@@ -285,8 +285,19 @@ class PostgresDB(DatabaseService):
         finally:
             session.close()
 
-    def clear_database(self):
-        return super().clear_database()
+    def clear_database(self) -> bool:
+        """Clear all documents from the database using SQLAlchemy ORM."""
+        try:
+            session = self._Session()
+            session.query(SQLDocument).delete()
+            session.commit()
+            return True
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Failed to clear database: {e}")
+            return False
+        finally:
+            session.close()
 
     def query_documents(self, filters):
         return super().query_documents(filters)
