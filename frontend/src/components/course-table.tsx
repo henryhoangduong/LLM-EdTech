@@ -7,32 +7,35 @@ import {
   SortingState,
   RowSelectionState
 } from '@tanstack/react-table'
+import { Checkbox } from './ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-
-export type Course = {
-  id: string
-  name: string
-  created_at: string
-}
-
+import { useEffect, useState } from 'react'
+import { Course } from '@/types/types'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from '@/components/ui/pagination'
 export const columns: ColumnDef<Course>[] = [
   {
     id: 'select',
     header: ({ table }) => (
-      <input
-        type='checkbox'
-        checked={table.getIsAllRowsSelected()}
-        onChange={table.getToggleAllRowsSelectedHandler()}
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label='Select all'
       />
     ),
     cell: ({ row }) => (
-      <input
-        type='checkbox'
+      <Checkbox
         checked={row.getIsSelected()}
-        onChange={row.getToggleSelectedHandler()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
         onClick={(e) => e.stopPropagation()}
+        aria-label='Select row'
       />
     ),
     enableSorting: false,
@@ -72,12 +75,26 @@ export const columns: ColumnDef<Course>[] = [
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  page: number
+  pageSize: number
+  totalPages: number
+  onPageChange: (page: number) => void
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  totalPages,
+  page,
+  pageSize,
+  onPageChange
+}: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
-
+  const [pagination, setPagination] = useState({
+    pageIndex: page - 1,
+    pageSize: pageSize
+  })
   const table = useReactTable({
     data,
     columns,
@@ -86,9 +103,13 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
+    onPaginationChange: setPagination,
+    manualPagination: true,
+    pageCount: totalPages,
     state: {
       rowSelection,
-      sorting
+      sorting,
+      pagination
     }
   })
   const nav = useNavigate()
@@ -120,9 +141,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       className='cursor-pointer'
-                      onClick={() => {
-                        handleNav(row.original.id)
-                      }}
+                      onClick={() => handleNav((row.original as { id: string }).id)}
                       key={cell.id}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -140,6 +159,36 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           )}
         </TableBody>
       </Table>
+      <div className='flex justify-between items-center '>
+        <div className='text-sm text-muted-foreground w-max'>
+          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+        </div>
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => onPageChange(page - 1)}
+                className={page > 1 ? 'cursor-pointer' : 'pointer-events-none opacity-50'}
+              />
+            </PaginationItem>
+
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink isActive={page === i + 1} onClick={() => onPageChange(i + 1)}>
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => onPageChange(page + 1)}
+                className={page < totalPages ? 'cursor-pointer' : 'pointer-events-none opacity-50'}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </div>
   )
 }

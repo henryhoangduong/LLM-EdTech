@@ -45,7 +45,6 @@ const FileActions = ({ doc_id }: Props) => {
     })
   }
   const handleOpenCloseFileInformation = (open: boolean) => {
-    console.log('open: ', open)
     setIsFileInformationOpen(open)
   }
   const queryClient = useQueryClient()

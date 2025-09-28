@@ -30,3 +30,17 @@ export interface Metadata {
   enabled?: boolean
   uploadedAt?: string
 }
+
+export type Course = {
+  id: string
+  name: string
+  created_at: string
+}
+
+export type getCoursesQueryFnResponse = {
+  items: Course[]
+  page: number
+  page_size: number
+  total: number
+  pages: number
+}

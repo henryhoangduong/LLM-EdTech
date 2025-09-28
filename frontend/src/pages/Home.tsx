@@ -1,4 +1,4 @@
-import { DataTable, Course } from '@/components/course-table'
+import { DataTable } from '@/components/course-table'
 import { columns } from '../components/course-table'
 import SummaryCard from '@/components/summary-card'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -13,14 +13,24 @@ import { Notebook, Scroll, Landmark } from 'lucide-react'
 
 const Home = () => {
   const { user } = useAuthContext()
+  const [page, setPage] = useState(1)
+  const limit = 10
   const { data, isLoading } = useQuery({
-    queryKey: ['course'],
-    queryFn: getCoursesQueryFn
+    queryKey: ['courses', page, limit],
+    queryFn: () => getCoursesQueryFn({ page, limit })
   })
+
   const [isNewCourseFormOpen, setIsNewCourseFormOpen] = useState(false)
+
   const handleModal = () => {
     setIsNewCourseFormOpen(!isNewCourseFormOpen)
   }
+  const handlePagination = (value: number) => {
+    console.log('click')
+    console.log(value)
+    setPage(value)
+  }
+
   return (
     <div className='w-full gap-5 flex flex-col  p-5'>
       <header className='p-4 w-full flex justify-between'>
@@ -50,7 +60,18 @@ const Home = () => {
                 <p>Courses</p>
               </CardTitle>
             </CardHeader>
-            <CardContent>{!isLoading && <DataTable columns={columns} data={data} />}</CardContent>
+            <CardContent>
+              {!isLoading && (
+                <DataTable
+                  columns={columns}
+                  data={data?.items || []}
+                  page={data?.page || 1}
+                  pageSize={data?.page_size || 10}
+                  totalPages={data?.pages || 1}
+                  onPageChange={handlePagination}
+                />
+              )}
+            </CardContent>
           </Card>
         </div>
         <div className='flex-1'>

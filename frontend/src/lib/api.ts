@@ -1,4 +1,4 @@
-import { User } from '@/types/types'
+import { getCoursesQueryFnResponse, User } from '@/types/types'
 import API from './axios-client'
 
 //*********************************************************************
@@ -46,15 +46,23 @@ const createCourseMutationFn = async ({ name, description }: { name: string; des
   return response.data
 }
 
-const getCoursesQueryFn = async () => {
-  const response = await API.get(`/course`)
+const getCoursesQueryFn = async ({
+  page = 1,
+  limit = 10
+}: {
+  page?: number
+  limit?: number
+}): Promise<getCoursesQueryFnResponse> => {
+  const response = await API.get(`/course`, {
+    params: { page, limit }
+  })
   return response.data
 }
 
 //*********************************************************************
 //***************************** INGESTION ********************************
 //*********************************************************************
-const ingestionMutationFn = async (files: FormData[]) => {
+const ingestionMutationFn = async (files: File[]) => {
   const form = new FormData()
   Array.from(files).forEach((file) => {
     form.append('files', file)
