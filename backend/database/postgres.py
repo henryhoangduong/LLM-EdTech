@@ -1,6 +1,7 @@
 import json
 import logging
 from contextlib import contextmanager
+from typing import List, Optional
 
 from fastapi import HTTPException, status
 from psycopg2.extras import RealDictCursor
@@ -9,14 +10,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
-from psycopg2.extras import RealDictCursor
-from models.HenryDoc import HenryDoc
+
 from core.config import settings
-from database.base import DatabaseService
-from models.HenryDoc import HenryDoc
 from core.database import Base
+from database.base import DatabaseService
 from models.document import SQLDocument
-from typing import List, Optional
+from models.HenryDoc import DateTimeEncoder, HenryDoc
+
 logger = logging.getLogger(__name__)
 
 
@@ -231,8 +231,24 @@ class PostgresDB(DatabaseService):
         finally:
             session.close()
 
-    def update_document(self, document_id, document):
-        return super().update_document(document_id, document)
+    def update_document(self, document_id: str, document: HenryDoc, user_id: str = None) -> bool:
+        try:
+            session = self._Session()
+            doc_dict = json.loads(
+                json.dumps(document.model_dump(), cls=DateTimeEncoder)
+            )
+            query = session.query(SQLDocument).filter(
+                SQLDocument.id == document_id)
+            if user_id:
+                query = query.filter(SQLDocument.user_id == user_id)
+            result = query.update({"data": doc_dict})
+            return result > 0
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Failed to update document {document_id}: {e}")
+            return False
+        finally:
+            session.close()
 
     def delete_document(self, document_id):
         return super().delete_document(document_id)
