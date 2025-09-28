@@ -217,8 +217,19 @@ class PostgresDB(DatabaseService):
         finally:
             session.close()
 
-    def get_all_documents(self):
-        return super().get_all_documents()
+    def get_all_documents(self, user_id: str = None) -> List[HenryDoc]:
+        try:
+            session = self._Session()
+            query = session.query(SQLDocument)
+            if user_id:
+                query = query.filter(SQLDocument.user_id == user_id)
+            docs = query.all()
+            return [doc.to_henrydoc() for doc in docs]
+        except Exception as e:
+            logger.error(f"Failed to get all documents: {e}")
+            return []
+        finally:
+            session.close()
 
     def update_document(self, document_id, document):
         return super().update_document(document_id, document)
