@@ -1,7 +1,7 @@
 import json
 import logging
 from contextlib import contextmanager
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 from fastapi import HTTPException, status
 from psycopg2.extras import RealDictCursor
@@ -156,7 +156,7 @@ class PostgresDB(DatabaseService):
     def insert_document(self, document: HenryDoc, user_id: str) -> str:
         try:
             session = self._Session()
-            db_doc = SQLDocument.from_simbadoc(document, user_id)
+            db_doc = SQLDocument.from_henrydoc(document, user_id)
             session.add(db_doc)
             session.commit()
             return document.id
@@ -299,8 +299,39 @@ class PostgresDB(DatabaseService):
         finally:
             session.close()
 
-    def query_documents(self, filters):
-        return super().query_documents(filters)
+    def query_documents(self, filters: Dict[str, Any]) -> List[HenryDoc]:
+        try:
+            session = self._Session()
+            query = session.query(SQLDocument)
+            for key, value in filters.items():
+                if key == "user_id":
+                    query = query.filter(SQLDocument.id == value)
+                elif key == "user_id":
+                    query = query.filter(SQLDocument.user_id == value)
+                else:
+                    # Handle nested JSON filters using PostgreSQL JSON operators
+                    path_parts = key.split(".")
+                    # Build the JSON path operator
+                    json_path_str = "->".join(
+                        [f"'{part}'" for part in path_parts[:-1]])
+                    if json_path_str:
+                        json_path_str += "->>"
+                    else:
+                        json_path_str = "->>"
+                    json_path_str += f"'{path_parts[-1]}'"
+
+                    # Apply the filter using raw SQL for JSON operators
+                    query = query.filter(
+                        f"data {json_path_str} = :value", value=str(value)
+                    )
+            results = query.all()
+            return [doc.to_henrydoc() for doc in results]
+
+        except Exception as e:
+            logger.error(f"Failed to query documents: {e}")
+            return []
+        finally:
+            session.close()
 
     @classmethod
     def health_check(cls):
@@ -311,3 +342,11 @@ class PostgresDB(DatabaseService):
             return True
         except Exception:
             return False
+
+    @classmethod
+    def close_pool(cls):
+        """Close all connections in the pool."""
+        if cls._pool:
+            cls._pool.closeall()
+            cls._pool = None
+            logger.info("Closed PostgreSQL connection pool")
