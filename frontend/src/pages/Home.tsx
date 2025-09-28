@@ -1,5 +1,5 @@
-import { DataTable, Course } from '@/components/class-table'
-import { columns } from '../components/class-table'
+import { DataTable, Course } from '@/components/course-table'
+import { columns } from '../components/course-table'
 import SummaryCard from '@/components/summary-card'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuthContext } from '@/context/auth-provider'

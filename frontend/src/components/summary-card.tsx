@@ -1,6 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 import { ReactNode } from 'react'
-import { Notebook } from 'lucide-react'
 
 const SummaryCard = ({
   bg,

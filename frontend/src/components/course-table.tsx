@@ -1,6 +1,15 @@
-import { ColumnDef, useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table'
+import {
+  ColumnDef,
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  getSortedRowModel,
+  SortingState,
+  RowSelectionState
+} from '@tanstack/react-table'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 export type Course = {
   id: string
@@ -10,8 +19,33 @@ export type Course = {
 
 export const columns: ColumnDef<Course>[] = [
   {
+    id: 'select',
+    header: ({ table }) => (
+      <input
+        type='checkbox'
+        checked={table.getIsAllRowsSelected()}
+        onChange={table.getToggleAllRowsSelectedHandler()}
+      />
+    ),
+    cell: ({ row }) => (
+      <input
+        type='checkbox'
+        checked={row.getIsSelected()}
+        onChange={row.getToggleSelectedHandler()}
+        onClick={(e) => e.stopPropagation()}
+      />
+    ),
+    enableSorting: false,
+    enableColumnFilter: false
+  },
+  {
     accessorKey: 'id',
-    header: 'ID'
+    header: ({ column }) => (
+      <button onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+        ID {column.getIsSorted() === 'asc' ? '↑' : column.getIsSorted() === 'desc' ? '↓' : ''}
+      </button>
+    ),
+    enableSorting: true
   },
   {
     accessorKey: 'name',
@@ -41,15 +75,27 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
+    state: {
+      rowSelection,
+      sorting
+    }
+  })
   const nav = useNavigate()
   const handleNav = (id: string) => {
     nav(`/course/${id}`)
   }
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel()
-  })
+
   return (
     <div>
       <Table>
