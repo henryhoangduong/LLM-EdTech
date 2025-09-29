@@ -148,10 +148,32 @@ class FrontEndConfig(BaseModel):
         default="http://localhost:3000", description="Frontend url", env="FRONTEND_ORIGIN"
     )
 
+    def __init__(self, **kwargs):
+        env_values = {}
+        for field_name, field in self.__class__.model_fields.items():
+            env_var = (
+                field.json_schema_extra.get(
+                    "env") if field.json_schema_extra else None
+            )
+            if isinstance(env_var, str):
+                env_vars = [env_var]
+            elif isinstance(env_var, (list, tuple)):
+                env_vars = env_var
+            else:
+                env_vars = []
+
+            for var in env_vars:
+                value = os.getenv(var)
+                if value is not None:
+                    env_values[field_name] = value
+                    break
+        env_values.update(kwargs)
+        super().__init__(**env_values)
+
 
 class Settings(BaseSettings):
     postgres: PostgresSettings = PostgresSettings()
-    frontend: FrontEndConfig = Field(default_factory=FrontEndConfig)
+    frontend: FrontEndConfig = FrontEndConfig()
     storage: StorageSettings = Field(default_factory=StorageSettings)
     embedding: EmbeddingConfig = Field(default_factory=EmbeddingConfig)
     database: DatabaseConfig = Field(default_factory=DatabaseConfig)
