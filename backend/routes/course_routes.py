@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import get_db
-from schemas.course import CreateCourseRequest
+from schemas.schemas import CreateCourseRequest
 from services.course_service import CourseService
 
 course_routes = APIRouter()

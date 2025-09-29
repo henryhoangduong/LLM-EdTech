@@ -28,6 +28,11 @@ else:
         "Using default environment variables or system environment variables")
 
 
+class DatabaseConfig(BaseModel):
+    provider: str = "litedb"
+    additional_params: Dict[str, Any] = Field(default_factory=dict)
+
+
 class LLMConfig(BaseModel):
     model_config = ConfigDict(protected_namespaces=())
     provider: str = Field(default="openai")
@@ -57,6 +62,27 @@ class StorageSettings(BaseSettings):
         description="Supabase storage bucket name",
         env="SUPABASE_STORAGE_BUCKET",
     )
+
+
+class EmbeddingConfig(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
+    provider: str = "openai"
+    model_name: str = "text-embedding-3-small"
+    device: str = os.getenv("DEVICE")
+
+    additional_params: Dict[str, Any] = Field(default_factory=dict)
+
+
+class VectorStoreConfig(BaseModel):
+    provider: str = "faiss"
+    collection_name: str = "migi_collection"
+    additional_params: Dict[str, Any] = Field(default_factory=dict)
+
+
+class ChunkingConfig(BaseModel):
+    chunk_size: int = 50
+    chunk_overlap: int = 50
 
 
 class PostgresSettings(BaseSettings):
@@ -94,37 +120,41 @@ class PostgresSettings(BaseSettings):
             return self.connection_string
         return f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}"
 
+    def __init__(self, **kwargs):
+        env_values = {}
+        for field_name, field in self.__class__.model_fields.items():
+            env_var = (
+                field.json_schema_extra.get(
+                    "env") if field.json_schema_extra else None
+            )
+            if isinstance(env_var, str):
+                env_vars = [env_var]
+            elif isinstance(env_var, (list, tuple)):
+                env_vars = env_var
+            else:
+                env_vars = []
 
-class PathConfig(BaseModel):
-    base_dir: Path = Field(default_factory=lambda: BASE_DIR)
-    faiss_index_dir: Path = Field(default="vector_stores/faiss_index")
-    vector_store_dir: Path = Field(default="vector_stores")
-    upload_dir: Path = Field(default="uploads")
-    temp_dir: Path = Field(default="temp")
+            for var in env_vars:
+                value = os.getenv(var)
+                if value is not None:
+                    env_values[field_name] = value
+                    break
+        env_values.update(kwargs)
+        super().__init__(**env_values)
 
-    def __init__(self, **data):
-        super().__init__(**data)
-        self.faiss_index_dir = self.base_dir / self.faiss_index_dir
-        self.vector_store_dir = self.base_dir / self.vector_store_dir
-        self.upload_dir = self.base_dir / self.upload_dir
-        self.temp_dir = self.base_dir / self.temp_dir
 
-        # Create directories if they don't exist
-        for path in [
-            self.faiss_index_dir,
-            self.vector_store_dir,
-            self.upload_dir,
-            self.temp_dir,
-        ]:
-            path.mkdir(parents=True, exist_ok=True)
-            logger.info(f"Ensured directory exists: {path}")
+class FrontEndConfig(BaseModel):
+    frontend_origin: str = Field(
+        default="http://localhost:3000", description="Frontend url", env="FRONTEND_ORIGIN"
+    )
 
 
 class Settings(BaseSettings):
-    postgres: PostgresSettings = Field(default_factory=PostgresSettings)
-    frontend_origin: str = os.getenv("FRONTEND_ORIGIN")
+    postgres: PostgresSettings = PostgresSettings()
+    frontend: FrontEndConfig = Field(default_factory=FrontEndConfig)
     storage: StorageSettings = Field(default_factory=StorageSettings)
-    paths: PathConfig = Field(default_factory=PathConfig)
+    embedding: EmbeddingConfig = Field(default_factory=EmbeddingConfig)
+    database: DatabaseConfig = Field(default_factory=DatabaseConfig)
 
     @classmethod
     def load_from_yaml(cls, config_path: Optional[Path] = None) -> "Settings":

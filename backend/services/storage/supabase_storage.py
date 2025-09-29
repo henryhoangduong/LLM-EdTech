@@ -15,12 +15,9 @@ logger = logging.getLogger(__name__)
 
 
 class SupabaseStorageProvider(StorageProvider):
-    def __init__(self, base_path: str):
-        self.base_path = base_path
+    def __init__(self):
         self.client: Client = SupabaseClientSingleton.get_instance()
         self.bucket = settings.storage.supabase_bucket
-        self.temp_dir = Path(settings.paths.temp_dir)
-        self.temp_dir.mkdir(parents=True, exist_ok=True)
         self.path_mapping: Dict[str, Path] = {}
 
     async def save_file(self, file_path: Path, file: UploadFile) -> Path:
@@ -28,25 +25,16 @@ class SupabaseStorageProvider(StorageProvider):
         try:
             object_name = str(file_path).replace("\\", "/")
 
-            local_file_path = self.temp_dir / file_path.name
-            local_file_path.parent.mkdir(parents=True, exist_ok=True)
-
-            content = await file.read()
-
-            with open(local_file_path, "wb") as f:
-                f.write(content)
-
             # Upload to Supabase
-            with open(local_file_path, "rb") as f:
+            with open(file_path, "rb") as f:
                 result = self.client.storage.from_(self.bucket).upload(
                     object_name, f, {"content-type": file.content_type}
                 )
+
             # Reset file pointer for subsequent reads
             await file.seek(0)
 
-            self.path_mapping[str(file_path)] = local_file_path
-
-            return local_file_path
+            return file_path
 
         except Exception as e:
             logger.error(f"Error saving file to Supabase: {str(e)}")

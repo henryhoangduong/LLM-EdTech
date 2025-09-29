@@ -15,10 +15,10 @@
 #   streaming: true
 #   additional_params: {}
 
-# embedding:
-#   provider: "huggingface"
-#   model_name: "sentence-transformers/all-MiniLM-L6-L2"
-#   additional_params: {}
+embedding:
+  provider: "huggingface"
+  model_name: "sentence-transformers/all-MiniLM-L6-L2"
+  additional_params: {}
 
 # chunking:
 #   chunk_size: 512
@@ -39,6 +39,6 @@
 storage:
   provider: supabase
 
-# database:
-#   provider: postgres
-#   additional_params: {} 
+database:
+  provider: postgres
+  additional_params: {} 

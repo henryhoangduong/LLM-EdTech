@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, Field
 
@@ -16,3 +16,20 @@ class SignInRequest(BaseModel):
 
 class SignOutRequest(BaseModel):
     access_token: str = Field(..., description="Access Token")
+
+
+class CreateCourseRequest(BaseModel):
+    name: str = Field(description="Course name")
+    description: Optional[str]
+
+
+class Query(BaseModel):
+    message: str
+
+
+class Query(BaseModel):
+    message: str
+
+
+class BulkIngestionRequest(BaseModel):
+    folder_paths: List[str]

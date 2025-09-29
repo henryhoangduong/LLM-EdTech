@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import get_db
 from middleware.auth import get_current_user
-from schemas.auth import SignInRequest, SignUpRequest
+from schemas.schemas import SignInRequest, SignUpRequest
 from services.auth_service import AuthService
 
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ async def login(request: SignInRequest,  authService: AuthService = Depends(get_
 @auth_routes.post("/signup", status_code=status.HTTP_201_CREATED)
 async def signup(signUpRequest: SignUpRequest,  authService: AuthService = Depends(get_classroom_service)):
     try:
-        response = await authService.signup(email=signUpRequest.email, password=signUpRequest.password,name=signUpRequest.name)
+        response = await authService.signup(email=signUpRequest.email, password=signUpRequest.password, name=signUpRequest.name)
         return response
     except Exception as e:
         logger.error(f"Unexpected error during signup: {str(e)}")

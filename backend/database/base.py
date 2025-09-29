@@ -42,5 +42,5 @@ class DatabaseService(ABC):
         pass
 
     @abstractmethod
-    def health_method(self) -> Dict[str, Union[bool, str]]:
+    def health_check(self) -> Dict[str, Union[bool, str]]:
         pass

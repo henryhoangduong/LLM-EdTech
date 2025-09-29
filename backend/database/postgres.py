@@ -14,8 +14,8 @@ from sqlalchemy.pool import NullPool
 from core.config import settings
 from core.database import Base
 from database.base import DatabaseService
-from models.document import SQLDocument
-from models.HenryDoc import DateTimeEncoder, HenryDoc
+from models.document import SQLDocument, DateTimeEncoder
+from models.HenryDoc import HenryDoc
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ class PostgresDB(DatabaseService):
             Base.metadata.create_all(self._engine)
             logger.info("Initialized SQLalchemy engine")
 
-    def _ensuer_chema(self):
+    def _ensure_schema(self):
         Base.metadata.create_all(self._engine)
 
     @classmethod

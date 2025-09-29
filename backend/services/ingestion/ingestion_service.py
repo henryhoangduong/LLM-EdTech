@@ -7,7 +7,7 @@ from pathlib import Path
 from fastapi import UploadFile
 from langchain.schema import Document
 
-from core.factories.storage_provider import StorageFactory
+from core.factories.storage_factory import StorageFactory
 from models.HenryDoc import HenryDoc, MetaDataType
 from services.ingestion.loader import Loader
 from services.splitting.splitter import Splitter
@@ -26,12 +26,12 @@ class DocumentIngestionService:
         try:
             file_path = Path(folder_path.strip("/"))/file.filename
             file_extension = f".{file.filename.split('.')[-1].lower()}"
-            saved_local_path = await self.storage.save_file(file_path, file)
+            # saved_local_path = await self.storage.save_file(file_path, file)
             saved_remote_path = await self.storage.get_public_url(file_path)
-            file_size = saved_local_path.stat().st_size
+            file_size = file_path.stat().st_size
             if file_size == 0:
-                raise ValueError(f"File {saved_local_path} is empty")
-            document = await self.loader.aload(file_path=str(saved_local_path))
+                raise ValueError(f"File {file_path} is empty")
+            document = await self.loader.aload(file_path=str(file_path))
             document = await asyncio.to_thread(self.splitter.split_document, document)
             for doc in document:
                 doc.id = str(uuid.uuid4())

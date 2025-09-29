@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Dict, Type
 
 from core.config import settings
@@ -23,4 +22,4 @@ class StorageFactory:
             raise ValueError(f"Unknown storage provider: {provider_type}")
 
         provider_class = cls._providers[provider_type]
-        return provider_class(Path(settings.paths.upload_dir))
+        return provider_class()
