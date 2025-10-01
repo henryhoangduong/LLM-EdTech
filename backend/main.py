@@ -45,15 +45,15 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-# app.include_router(auth_routes, prefix="/api/auth", tags=["Auth"])
-# app.include_router(role_routes, prefix="/api/role", tags=["Roles"])
-# app.include_router(
-#     ingestion_routes, prefix="/api/ingestion", tags=["Ingestion"])
-# app.include_router(
-#     course_routes, prefix="/api/course", tags=["Courses"])
-# app.include_router(chat_routes, prefix="/api/chat", tags=["Chat"])
-# app.include_router(
-#     embedding_routes, prefix="/api/embedding", tags=["Embedding"])
+app.include_router(auth_routes, prefix="/api/auth", tags=["Auth"])
+app.include_router(role_routes, prefix="/api/role", tags=["Roles"])
+app.include_router(
+    ingestion_routes, prefix="/api/ingestion", tags=["Ingestion"])
+app.include_router(
+    course_routes, prefix="/api/course", tags=["Courses"])
+app.include_router(chat_routes, prefix="/api/chat", tags=["Chat"])
+app.include_router(
+    embedding_routes, prefix="/api/embedding", tags=["Embedding"])
 
 
 app.add_middleware(

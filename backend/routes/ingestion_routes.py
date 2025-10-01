@@ -28,8 +28,6 @@ async def ingest_document(
 ):
     """Ingest a document into the vector store"""
     try:
-        print("files: ", files)
-
         async def process_file(file):
             henry_doc = await ingestion_service.ingest_document(file, folder_path)
             return henry_doc

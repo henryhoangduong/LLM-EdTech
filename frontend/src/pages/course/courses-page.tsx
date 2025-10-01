@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getCoursesQueryFn } from '@/lib/api'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { columns, DataTable } from '@/components/course-table'
 
 const Coureses = () => {
-  const limit = 20
+  const limit = 25
   const [page, setPage] = useState<number>(1)
   const { data, isLoading } = useQuery({
     queryKey: ['courses', page, limit],

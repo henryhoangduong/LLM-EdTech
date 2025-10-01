@@ -14,7 +14,7 @@ import { Notebook, Scroll, Landmark } from 'lucide-react'
 const Home = () => {
   const { user } = useAuthContext()
   const [page, setPage] = useState(1)
-  const limit = 10
+  const limit = 5
   const { data, isLoading } = useQuery({
     queryKey: ['courses', page, limit],
     queryFn: () => getCoursesQueryFn({ page, limit })
