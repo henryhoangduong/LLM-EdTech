@@ -1,0 +1,1 @@
+alter table chunks_embeddings alter column embedding type vector(384)

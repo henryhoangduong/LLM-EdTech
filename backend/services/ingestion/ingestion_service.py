@@ -26,7 +26,7 @@ class DocumentIngestionService:
         try:
             file_path = Path(folder_path.strip("/"))/file.filename
             file_extension = f".{file.filename.split('.')[-1].lower()}"
-            # saved_local_path = await self.storage.save_file(file_path, file)
+            saved_local_path = await self.storage.save_file(file_path, file)
             saved_remote_path = await self.storage.get_public_url(file_path)
             file_size = file_path.stat().st_size
             if file_size == 0:

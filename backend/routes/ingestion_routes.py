@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 ingestion_routes = APIRouter()
 loader = Loader()
 
-db = get_db()
 ingestion_service = DocumentIngestionService()
 
 
