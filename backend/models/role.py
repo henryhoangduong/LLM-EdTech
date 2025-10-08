@@ -1,8 +1,7 @@
+from core.database import Base
 from sqlalchemy import INT, TIMESTAMP, Boolean, Column, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-
-from core.database import Base
 
 
 class Role(Base):
@@ -11,4 +10,4 @@ class Role(Base):
     name = Column(String)
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=func.now())
-    user_courses = relationship("UserCourse", back_populates="role")
+    # user_courses = relationship("user_course", back_populates="role")

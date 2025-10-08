@@ -1,15 +1,15 @@
 import json
 from datetime import datetime
+from typing import List
 
+from core.database import Base
+from langchain.schema import Document
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import Column, DateTime, ForeignKey, String, func
-from sqlalchemy import Column, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
-from pgvector.sqlalchemy import Vector
-from typing import List
-from core.database import Base
-from models.HenryDoc import HenryDoc
-from langchain.schema import Document
+
+from models.henry_doc import HenryDoc
 
 
 class DateTimeEncoder(json.JSONEncoder):

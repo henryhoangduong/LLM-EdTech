@@ -6,6 +6,7 @@ from fastapi.responses import StreamingResponse
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel
 from schemas.schemas import Query
+
 logger = logging.getLogger(__name__)
 chat_routes = APIRouter()
 

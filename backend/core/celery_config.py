@@ -4,9 +4,8 @@ import os
 import torch
 from celery import Celery
 from celery.signals import worker_init, worker_shutdown, worker_shutting_down
-from dotenv import load_dotenv
-
 from core.config import settings
+from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
 load_dotenv()

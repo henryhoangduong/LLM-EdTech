@@ -1,10 +1,9 @@
 import logging
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from core.database import get_db
+from fastapi import APIRouter, Depends, HTTPException, status
 from services.role_service import RoleService
+from sqlalchemy.ext.asyncio import AsyncSession
 
 role_routes = APIRouter()
 logger = logging.getLogger(__name__)

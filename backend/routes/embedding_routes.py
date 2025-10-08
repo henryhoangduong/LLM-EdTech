@@ -1,6 +1,8 @@
 from typing import List
+
 from fastapi import APIRouter, HTTPException
 from services.embedding.embedding_service import EmbeddingService
+
 embedding_routes = APIRouter()
 embeddingService = EmbeddingService()
 

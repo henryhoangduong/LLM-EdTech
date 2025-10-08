@@ -2,14 +2,14 @@ import asyncio
 import logging
 from typing import Any, Dict, List
 
-from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
-
 from core.database import get_db
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from middleware.auth import get_current_user
-from services.ingestion.ingestion_service import DocumentIngestionService
 from schemas.schemas import BulkIngestionRequest
-from models.HenryDoc import HenryDoc
+from services.ingestion.ingestion_service import DocumentIngestionService
 from services.ingestion.loader import Loader
+
+from models.henry_doc import HenryDoc
 
 logger = logging.getLogger(__name__)
 ingestion_routes = APIRouter()
@@ -23,7 +23,7 @@ async def ingest_document(
         files: List[UploadFile] = File(...),
     folder_path: str = Query(
         default="/", description="Folder path to store the document"
-    ),
+            ),
 ):
     """Ingest a document into the vector store"""
     try:
@@ -95,4 +95,3 @@ async def get_loaders():
             loader_name.__name__ for loader_name in loader.SUPPORTED_EXTENSIONS.values()
         ]
     }
-

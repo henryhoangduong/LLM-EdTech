@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Union
 
-from models.HenryDoc import HenryDoc
+from models.henry_doc import HenryDoc
 
 
 class DatabaseService(ABC):

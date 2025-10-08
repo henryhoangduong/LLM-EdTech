@@ -1,26 +1,13 @@
-from sqlalchemy import INT, TIMESTAMP, Column, ForeignKey
-from sqlalchemy.orm import relationship
+from core.database import Base
+from sqlalchemy import (INTEGER, Column, DateTime, ForeignKey, String, UUID,
+                        Table)
 from sqlalchemy.sql import func
 
-from core.database import Base
-
-
-class UserCourse(Base):
-    __tablename__ = "user_course"
-
-    id = Column(INT, primary_key=True, index=True)
-
-    user_id = Column(INT, ForeignKey("user.id"), nullable=False)
-    course_id = Column(INT, ForeignKey("course.id"), nullable=False)
-    role_id = Column(INT, ForeignKey("role.id"), nullable=False)
-
-    created_at = Column(
-        TIMESTAMP(timezone=True),
-        nullable=False,
-        server_default=func.now(),
-    )
-
-    # Relationships (optional, for ORM convenience)
-    user = relationship("User", back_populates="user_courses")
-    course = relationship("Course", back_populates="user_courses")
-    role = relationship("Role", back_populates="user_courses")
+user_course = Table('user_course', Base.metadata,
+                    Column('id', INTEGER, primary_key=True),
+                    Column('user_id', UUID,
+                           ForeignKey('user.id')),
+                    Column('course_id', INTEGER, ForeignKey('course.id')),
+                    Column('created_at', DateTime(
+                        timezone=True), default=func.now()),
+                    )
