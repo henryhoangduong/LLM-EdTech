@@ -4,14 +4,14 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 
-from core.factories.storage_factory import StorageFactory
 from fastapi import UploadFile
 from langchain.schema import Document
+
+from core.factories.storage_factory import StorageFactory
+from models.henry_doc import HenryDoc, MetaDataType
 from services.ingestion.loader import Loader
 from services.splitting.splitter import Splitter
 from services.storage.base import StorageProvider
-
-from models.henry_doc import HenryDoc, MetaDataType
 
 logger = logging.getLogger(__name__)
 

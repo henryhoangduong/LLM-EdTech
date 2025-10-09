@@ -1,6 +1,7 @@
-from core.database import Base
-from sqlalchemy import Column, Integer, String, UUID
+from sqlalchemy import UUID, Column, Integer, String
 from sqlalchemy.orm import relationship
+
+from core.database import Base
 from models.user_course import user_course
 
 

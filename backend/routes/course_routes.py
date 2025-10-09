@@ -1,11 +1,12 @@
 import logging
 
-from core.database import get_db
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from core.database import get_db
 from middleware.auth import get_current_user
 from schemas.schemas import CreateCourseRequest
 from services.course_service import CourseService
-from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
 course_routes = APIRouter()

@@ -1,11 +1,12 @@
 import logging
 from contextlib import asynccontextmanager
 
-from core.config import settings
-from core.utils.logger import setup_logging
 from dotenv import find_dotenv, load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from core.config import settings
+from core.utils.logger import setup_logging
 from routes import (auth_routes, chat_routes, course_routes, embedding_routes,
                     ingestion_routes, role_routes)
 

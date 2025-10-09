@@ -1,11 +1,13 @@
 import logging
-from models.user import User
-from core.supabase_client import get_supabase_client
-from models import Course, user_course
-from sqlalchemy import func, select, insert
+import uuid
+
+from sqlalchemy import func, insert, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
-import uuid
+
+from core.supabase_client import get_supabase_client
+from models import Course, user_course
+from models.user import User
 
 logger = logging.getLogger(__name__)
 

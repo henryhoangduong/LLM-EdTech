@@ -1,5 +1,5 @@
 from core.config import settings
-from core.factories.embeddings_factory import get_embeddings
+from core.factories.embedding_factory import get_embeddings
 from services.vector_store import PGVectorStore, VectorStoreService
 from services.vector_store.vector_store_service import VectorStoreService
 

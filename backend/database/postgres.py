@@ -3,11 +3,7 @@ import logging
 from contextlib import contextmanager
 from typing import Any, Dict, List, Optional
 
-from core.config import settings
-from core.database import Base
-from database.base import DatabaseService
 from fastapi import HTTPException, status
-from models.document import DateTimeEncoder, SQLDocument
 from psycopg2.extras import RealDictCursor
 from psycopg2.pool import ThreadedConnectionPool
 from sqlalchemy import create_engine
@@ -15,6 +11,10 @@ from sqlalchemy.engine import URL
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
+from core.config import settings
+from core.database import Base
+from database.base import DatabaseService
+from models.document import DateTimeEncoder, SQLDocument
 from models.henry_doc import HenryDoc
 
 logger = logging.getLogger(__name__)

@@ -1,8 +1,9 @@
 import logging
 from typing import Dict, List, Optional, Union, cast
 
-from core.factories.database_factory import get_database
 from langchain.schema import Document
+
+from core.factories.database_factory import get_database
 from services.splitting.splitter import Splitter
 
 logger = logging.getLogger(__name__)

@@ -1,7 +1,8 @@
-from core.database import Base
-from sqlalchemy import (INTEGER, Column, DateTime, ForeignKey, String, UUID,
+from sqlalchemy import (INTEGER, UUID, Column, DateTime, ForeignKey, String,
                         Table)
 from sqlalchemy.sql import func
+
+from core.database import Base
 
 user_course = Table('user_course', Base.metadata,
                     Column('id', INTEGER, primary_key=True),

@@ -1,6 +1,7 @@
 import logging
 
 import torch
+
 from core.celery_config import celery_app as celery
 
 # from core.factories.database_factory import get_database

@@ -3,11 +3,12 @@ import os
 from pathlib import Path
 from typing import Dict, Optional
 
+from fastapi import UploadFile
+from storage3.exceptions import StorageApiError
+
 from core.config import settings
 from core.supabase_client import SupabaseClientSingleton
-from fastapi import UploadFile
 from services.storage.base import StorageProvider
-from storage3.exceptions import StorageApiError
 from supabase import Client
 
 logger = logging.getLogger(__name__)

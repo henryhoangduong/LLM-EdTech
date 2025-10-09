@@ -2,14 +2,14 @@ import asyncio
 import logging
 from typing import Any, Dict, List
 
-from core.database import get_db
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+
+from core.database import get_db
 from middleware.auth import get_current_user
+from models.henry_doc import HenryDoc
 from schemas.schemas import BulkIngestionRequest
 from services.ingestion.ingestion_service import DocumentIngestionService
 from services.ingestion.loader import Loader
-
-from models.henry_doc import HenryDoc
 
 logger = logging.getLogger(__name__)
 ingestion_routes = APIRouter()
