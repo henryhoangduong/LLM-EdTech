@@ -73,7 +73,6 @@ class ChunkEmbedding(Base):
 class SQLDocument(Base):
     __tablename__ = "documents"
     id = Column(String, primary_key=True)
-    user_id = Column(String, nullable=False)
     data = Column(JSONB, nullable=False)
     chunks = relationship(
         "ChunkEmbedding", back_populates="document", cascade="all, delete-orphan"

@@ -7,27 +7,32 @@
 #   faiss_index_dir: "vector_stores/faiss_index"
 #   vector_store_dir: "vector_stores"
 
-# llm:
-#   provider: "google"
-#   model_name: "gemini-1.5-flash"
-#   temperature: 0.0
-#   max_tokens: null
-#   streaming: true
-#   additional_params: {}
+llm:
+  provider: "google"
+  model_name: "gemini-1.5-flash"
+  temperature: 0.0
+  max_tokens: null
+  streaming: true
+  additional_params: {}
 
 embedding:
   provider: "huggingface"
   model_name: "sentence-transformers/all-MiniLM-L6-L2"
   additional_params: {}
 
+vector_store:
+  provider: "pgvector"
+  collection_name: "chunk_embeddings"
+
+  additional_params: {}
+
 # chunking:
 #   chunk_size: 512
 #   chunk_overlap: 200
 
-# retrieval:
-#   method: "default"
-
-#   k: 5
+retrieval:
+  method: "default"
+  k: 5
 
 #   params: 
 #     score_threshold: 0.5

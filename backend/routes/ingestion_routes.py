@@ -4,18 +4,18 @@ from typing import Any, Dict, List
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 
-from core.database import get_db
 from middleware.auth import get_current_user
 from models.henry_doc import HenryDoc
 from schemas.schemas import BulkIngestionRequest
 from services.ingestion.ingestion_service import DocumentIngestionService
 from services.ingestion.loader import Loader
-
+from core.factories.database_factory import get_database
 logger = logging.getLogger(__name__)
 ingestion_routes = APIRouter()
 loader = Loader()
 
 ingestion_service = DocumentIngestionService()
+db = get_database()
 
 
 @ingestion_routes.post("")
@@ -37,13 +37,7 @@ async def ingest_document(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@ingestion_routes.get("/ingestion")
-async def get_ingestion_documents():
-    """Get all ingested documents for the current user"""
-    pass
-
-
-@ingestion_routes.post("/ingestion/bulk")
+@ingestion_routes.post("/bulk")
 async def ingest_bulk_folders(
     request: BulkIngestionRequest,
     destination_path: str = Query(
@@ -57,7 +51,7 @@ async def ingest_bulk_folders(
     pass
 
 
-@ingestion_routes.put("/ingestion/update_document")
+@ingestion_routes.put("/update_document")
 async def update_document(
     doc_id: str,
     new_simbadoc: HenryDoc,
@@ -66,21 +60,22 @@ async def update_document(
     pass
 
 
-@ingestion_routes.get("/ingestion")
+@ingestion_routes.get("")
 async def get_ingestion_documents(
     current_user: Dict[str, Any] = Depends(get_current_user),
 ):
-    pass
+    documents = db.get_all_documents(user_id=current_user["id"])
+    return documents
 
 
-@ingestion_routes.get("/ingestion/{uid}")
+@ingestion_routes.get("/{uid}")
 async def get_document(
     uid: str, current_user: Dict[str, Any] = Depends(get_current_user)
 ):
     pass
 
 
-@ingestion_routes.delete("/ingestion")
+@ingestion_routes.delete("")
 async def delete_document(
     uids: List[str], current_user: Dict[str, Any] = Depends(get_current_user)
 ):

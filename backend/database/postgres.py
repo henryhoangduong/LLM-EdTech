@@ -221,8 +221,6 @@ class PostgresDB(DatabaseService):
         try:
             session = self._Session()
             query = session.query(SQLDocument)
-            if user_id:
-                query = query.filter(SQLDocument.user_id == user_id)
             docs = query.all()
             return [doc.to_henrydoc() for doc in docs]
         except Exception as e:

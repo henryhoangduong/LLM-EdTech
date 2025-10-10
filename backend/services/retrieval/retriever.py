@@ -2,8 +2,8 @@ import logging
 from typing import Any, Dict, List, Optional, Union
 
 from langchain.schema import Document
-from retrieval.base import RetrievalMethod
-from retrieval.factory import RetrieverFactory
+from services.retrieval.base import RetrievalMethod
+from services.retrieval.factory import RetrieverFactory
 
 from core.config import settings
 from core.factories.vector_store_factory import VectorStoreFactory

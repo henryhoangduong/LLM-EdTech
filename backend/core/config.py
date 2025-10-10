@@ -51,6 +51,25 @@ class LLMConfig(BaseModel):
     additional_params: Dict[str, Any] = Field(default_factory=dict)
 
 
+class LLMConfig(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
+    provider: str = Field(default="openai")
+    model_name: str = Field(default="gpt-4")
+    api_key: str = Field(
+        default_factory=lambda: os.getenv("OPENAI_API_KEY", ""),
+        description="OpenAI API key from environment variables",
+    )
+    base_url: str = Field(
+        default="http://localhost:11434",
+        description="Base URL for LLM service (e.g., Ollama server)",
+    )
+    temperature: float = Field(default=0.0)
+    streaming: bool = Field(default=True)
+    max_tokens: Optional[int] = None
+    additional_params: Dict[str, Any] = Field(default_factory=dict)
+
+
 class StorageSettings(BaseSettings):
     """Storage configuration settings"""
     provider: str = Field(
@@ -171,12 +190,39 @@ class FrontEndConfig(BaseModel):
         super().__init__(**env_values)
 
 
+class RetrievalConfig(BaseModel):
+    k: int = 5
+    method: str = "default"
+    params: Dict[str, Any] = Field(
+        default_factory=lambda: {
+            # Semantic retrieval parameters
+            "score_threshold": 0.5,
+            # Hybrid retrieval parameters
+            "prioritize_semantic": True,
+            # Ensemble retrieval parameters
+            "weights": [0.5, 0.5],  # Default weights for default + semantic
+            # Reranking parameters (future implementation)
+            "reranker_model": "colbert",
+            "reranker_threshold": 0.7,
+        }
+    )
+
+
+class VectorStoreConfig(BaseModel):
+    provider: str = "faiss"
+    collection_name: str = "migi_collection"
+    additional_params: Dict[str, Any] = Field(default_factory=dict)
+
+
 class Settings(BaseSettings):
     postgres: PostgresSettings = PostgresSettings()
     frontend: FrontEndConfig = FrontEndConfig()
     storage: StorageSettings = Field(default_factory=StorageSettings)
     embedding: EmbeddingConfig = Field(default_factory=EmbeddingConfig)
     database: DatabaseConfig = Field(default_factory=DatabaseConfig)
+    llm: LLMConfig = Field(default_factory=LLMConfig)
+    retrieval: RetrievalConfig = Field(default_factory=RetrievalConfig)
+    vector_store: VectorStoreConfig = Field(default_factory=VectorStoreConfig)
 
     @classmethod
     def load_from_yaml(cls, config_path: Optional[Path] = None) -> "Settings":
