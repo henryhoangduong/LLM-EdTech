@@ -36,25 +36,6 @@ class DatabaseConfig(BaseModel):
 class LLMConfig(BaseModel):
     model_config = ConfigDict(protected_namespaces=())
     provider: str = Field(default="openai")
-    model_nam: str = Field(default="gpt-4")
-    api_key: str = Field(
-        default_factory=lambda: os.getenv("OPENAI_API_KEY", ""),
-        description="OpenAI API key from environment variables",
-    )
-    base_url: str = Field(
-        default="http://localhost:11434",
-        description="Base URL for LLM service (e.g., Ollama server)",
-    )
-    temperature: float = Field(default=0.0)
-    streaming: bool = Field(default=True)
-    max_tokens: Optional[int] = None
-    additional_params: Dict[str, Any] = Field(default_factory=dict)
-
-
-class LLMConfig(BaseModel):
-    model_config = ConfigDict(protected_namespaces=())
-
-    provider: str = Field(default="openai")
     model_name: str = Field(default="gpt-4")
     api_key: str = Field(
         default_factory=lambda: os.getenv("OPENAI_API_KEY", ""),
@@ -64,7 +45,7 @@ class LLMConfig(BaseModel):
         default="http://localhost:11434",
         description="Base URL for LLM service (e.g., Ollama server)",
     )
-    temperature: float = Field(default=0.0)
+    # temperature: float = Field(default=0.0)
     streaming: bool = Field(default=True)
     max_tokens: Optional[int] = None
     additional_params: Dict[str, Any] = Field(default_factory=dict)

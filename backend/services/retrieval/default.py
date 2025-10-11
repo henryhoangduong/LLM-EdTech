@@ -18,6 +18,8 @@ class DefaultRetriever(BaseRetriever):
 
     def retrieve(self, query: str, user_id: str = None, **kwargs) -> List[Document]:
         user = supabase.auth.get_user()
-        current_user_id = user.user.id
+        current_user_id = ""
+        if user:
+            current_user_id = user.user.id
 
         return self.store.similarity_search(query, current_user_id)

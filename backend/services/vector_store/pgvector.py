@@ -137,10 +137,7 @@ class PGVectorStore(VectorStore):
         session = None
         try:
             session = self._Session()
-            query = session.query(ChunkEmbedding).filter(
-                ChunkEmbedding.user_id == user_id
-            )
-
+            query = session.query(ChunkEmbedding)
             chunks = query.all()
             # Modify this to ensure document_id is in metadata
             return [
@@ -186,7 +183,6 @@ class PGVectorStore(VectorStore):
     def _retrieve_with_text_search(
         self,
         query: str,
-        user_id: str,
         top_k: int,
         document_ids: Optional[List[str]] = None,
         language: str = "french",
@@ -214,84 +210,13 @@ class PGVectorStore(VectorStore):
             # Prepare the SQL query for text search
             sql = """
                 SELECT * FROM chunks_embeddings 
-                WHERE user_id = %s 
+                WHERE  
             """
 
-            params = [user_id]
+            params = []
 
             if document_ids:
-                sql += " AND document_id = ANY(%s) "
-                params.append(document_ids)
-
-            sql += f"""
-                ORDER BY ts_rank(to_tsvector(%s, data->>'page_content'), 
-                               plainto_tsquery(%s, %s)) DESC
-                LIMIT %s
-            """
-            params.extend([language, language, query, top_k])
-
-            # Execute query
-            cur.execute(sql, params)
-            rows = cur.fetchall()
-
-            # Convert rows to Document objects
-            results = []
-            for row in rows:
-                # Create a document with the data from the row
-                doc = Document(
-                    page_content=row["data"].get("page_content", ""),
-                    metadata={
-                        **row["data"].get("metadata", {}),
-                        "id": row["id"],
-                        "document_id": row["document_id"],
-                    },
-                )
-                results.append(doc)
-
-            return results
-
-        finally:
-            if session:
-                session.close()
-
-    def _retrieve_with_text_search(
-        self,
-        query: str,
-        user_id: str,
-        top_k: int,
-        document_ids: Optional[List[str]] = None,
-        language: str = "french",
-    ) -> List[Document]:
-        """
-        Perform text-based search using PostgreSQL's full-text search.
-
-        Args:
-            query: Search query
-            user_id: User ID for filtering
-            top_k: Number of results to retrieve
-            document_ids: Optional list of document IDs to filter by
-            language: Language for text search
-
-        Returns:
-            List of Document objects with results
-        """
-        session = None
-        try:
-            # Get a session and its engine
-            session = self._Session()
-            conn = session.connection()
-            cur = conn.connection.cursor(cursor_factory=RealDictCursor)
-
-            # Prepare the SQL query for text search
-            sql = """
-                SELECT * FROM chunks_embeddings 
-                WHERE user_id = %s 
-            """
-
-            params = [user_id]
-
-            if document_ids:
-                sql += " AND document_id = ANY(%s) "
+                sql += " document_id = ANY(%s) "
                 params.append(document_ids)
 
             sql += f"""
@@ -367,7 +292,6 @@ class PGVectorStore(VectorStore):
     def _retrieve_with_dense_vector(
         self,
         query: str,
-        user_id: str,
         top_k: int,
         document_ids: Optional[List[str]] = None,
     ) -> List[Document]:
@@ -395,17 +319,14 @@ class PGVectorStore(VectorStore):
             query_embedding_array = np.array(query_embedding)
             # Convert numpy array to list for psycopg2
             query_embedding_list = query_embedding_array.tolist()
-
             # Prepare the SQL query
             sql = """
                 SELECT * FROM chunks_embeddings 
-                WHERE user_id = %s 
             """
 
-            params = [user_id]
-
+            params = []
             if document_ids:
-                sql += " AND document_id = ANY(%s) "
+                sql += "WHERE document_id = ANY(%s) "
                 params.append(document_ids)
 
             sql += """
@@ -495,7 +416,6 @@ class PGVectorStore(VectorStore):
             # Get actual documents from database with text search ranking
             sparse_results = self._retrieve_with_text_search(
                 query=query,
-                user_id=user_id,
                 top_k=bm25_k,
                 document_ids=bm25_doc_ids,
                 language=language,
@@ -504,7 +424,6 @@ class PGVectorStore(VectorStore):
         # Step 2: Dense vector retrieval
         dense_results = self._retrieve_with_dense_vector(
             query=query,
-            user_id=user_id,
             top_k=dense_k,
             document_ids=None,  # Don't filter by BM25 results for pure dense retrieval
         )

@@ -58,6 +58,7 @@ async def invoke_graph(query: Query = Body(...)):
             yield f"{json.dumps({'error': str(e)})}\n\n"
         finally:
             print("Done")
+    return StreamingResponse(generate_response(), media_type="text/event-stream")
 
 
 @chat_routes.get("/status")

@@ -29,7 +29,6 @@ class ChunkEmbedding(Base):
     document_id = Column(
         String, ForeignKey("documents.id", ondelete="CASCADE"), nullable=False
     )
-    user_id = Column(String, nullable=False)
     data = Column(JSONB, nullable=False, default={})
     embedding = Column(Vector(384))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -58,7 +57,6 @@ class ChunkEmbedding(Base):
         return cls(
             id=doc.id,  # Use the LangChain document's ID directly as string
             document_id=document_id,
-            user_id=user_id,
             data=json.loads(json.dumps(doc_dict, cls=DateTimeEncoder)),
             embedding=embedding,
         )

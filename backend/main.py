@@ -52,7 +52,7 @@ app.include_router(
     ingestion_routes, prefix="/api/ingestion", tags=["Ingestion"])
 app.include_router(
     course_routes, prefix="/api/course", tags=["Courses"])
-app.include_router(chat_routes, prefix="/api/chat", tags=["Chat"])
+app.include_router(chat_routes, prefix="/api", tags=["Chat"])
 app.include_router(
     embedding_routes, prefix="/api/embedding", tags=["Embedding"])
 

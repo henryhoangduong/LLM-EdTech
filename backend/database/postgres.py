@@ -193,7 +193,7 @@ class PostgresDB(DatabaseService):
                     SQLDocument.id.in_(document_id)
                 )
                 if user_id:
-                    query = query.filter(SQLDocument.user_id == user_id)
+                    query = query.filter(SQLDocument)
                 docs = query.all()
                 doc_map = {doc.id: doc for doc in docs}
                 return [
@@ -205,8 +205,7 @@ class PostgresDB(DatabaseService):
                 query = session.query(SQLDocument).filter(
                     SQLDocument.id == document_id
                 )
-                if user_id:
-                    query = query.filter(SQLDocument.user_id == user_id)
+
                 doc = query.first()
                 return doc.to_henrydoc() if doc else None
         except Exception as e:

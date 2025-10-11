@@ -10,6 +10,7 @@ import { FileText } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import { Input } from '../ui/input'
 import { Documents } from '@/types/types'
+import { ingestionQueryFn } from '@/lib/api'
 interface Props {
   uploadButton?: React.ReactNode
 }
@@ -31,7 +32,9 @@ const RenderItem = ({
     <TableRow key={index}>
       <TableCell className='flex flex-row items-center gap-2 font-medium text-left cursor-pointer hover:underline'>
         <FileText className='w-[10px]' />
-        {item.metadata.filename}
+        <span className='w-[150px] truncate'>
+          {item.metadata.filename.charAt(0).toUpperCase() + item.metadata.filename.slice(1)}
+        </span>
       </TableCell>
       <TableCell className='text-center'>{item.metadata.chunk_number}</TableCell>
       <TableCell className='text-center'>{`${day}/${month}/${year}`}</TableCell>
@@ -47,10 +50,10 @@ const RenderItem = ({
 }
 
 const DocumentTable = () => {
-  // const { data, isLoading } = useQuery({
-  //   queryKey: ['ingestion-documents'],
-  //   queryFn: ingestionQueryFn
-  // })
+  const { data, isLoading } = useQuery({
+    queryKey: ['ingestion-documents'],
+    queryFn: ingestionQueryFn
+  })
   // const { mutate, isPending } = useMutation({
   //   mutationFn: embeddingDocumentByIdMutationFn
   // })
@@ -99,7 +102,7 @@ const DocumentTable = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {/* {data?.map((item, index) => <RenderItem item={item} index={index} handleEmbedding={handleEmbedding} />)} */}
+        {data?.map((item, index) => <RenderItem item={item} index={index} handleEmbedding={handleEmbedding} />)}
       </TableBody>
     </Table>
     // </Card>

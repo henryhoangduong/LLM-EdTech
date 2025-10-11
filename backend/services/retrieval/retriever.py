@@ -45,7 +45,9 @@ class Retriever:
     ):
         supabase = get_supabase_client()
         user = supabase.auth.get_user()
-        user_id = user.user.id
+        user_id = None
+        if user:
+            user_id = user.user.id
         if method:
             retriever = self.factory.get_retriever(
                 method, vector_store=self.store)

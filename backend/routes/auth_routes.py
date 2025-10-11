@@ -7,9 +7,10 @@ from core.database import get_db
 from middleware.auth import get_current_user
 from schemas.schemas import SignInRequest, SignUpRequest
 from services.auth_service import AuthService
-
+from core.supabase_client import get_supabase_client
 logger = logging.getLogger(__name__)
 auth_routes = APIRouter()
+supabase = get_supabase_client()
 
 
 def get_classroom_service(db: AsyncSession = Depends(get_db)) -> AuthService:

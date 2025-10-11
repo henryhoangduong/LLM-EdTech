@@ -60,7 +60,7 @@ const getCoursesQueryFn = async ({
 }
 
 //*********************************************************************
-//***************************** INGESTION ********************************
+//***************************** INGESTION *****************************
 //*********************************************************************
 const ingestionMutationFn = async (files: File[]) => {
   const form = new FormData()
@@ -71,6 +71,36 @@ const ingestionMutationFn = async (files: File[]) => {
   return response.data
 }
 
+const ingestionQueryFn = async (): Promise<Document[]> => {
+  const res = await API.get('ingestion')
+  return res.data
+}
+
+//*********************************************************************
+//***************************** CHAT **********************************
+//*********************************************************************
+const sendMessage = async (message: string) => {
+  try {
+    const baseURL = import.meta.env.VITE_API_BASE_URL
+    const response = await fetch(`${baseURL}/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message
+      })
+    })
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    return response
+  } catch (error) {
+    console.error('API Error:', error)
+    throw error
+  }
+}
 export {
   loginMutationFn,
   signupMutationFn,
@@ -79,5 +109,7 @@ export {
   getCourseByIdQueryFn,
   createCourseMutationFn,
   getCoursesQueryFn,
-  ingestionMutationFn
+  ingestionMutationFn,
+  ingestionQueryFn,
+  sendMessage
 }

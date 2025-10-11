@@ -13,12 +13,12 @@ const AppLayout = () => {
       <Asidebar />
       <SidebarInset className='overflow-x-hidden'>
         <div className='w-full'>
-          <>
+          <div className='h-[93vh] '>
             <Header />
-            <div className=''>
+            <div className='h-full'>
               <Outlet />
             </div>
-          </>
+          </div>
           {/* <CreateWorkspaceDialog />
           <CreateProjectDialog /> */}
         </div>

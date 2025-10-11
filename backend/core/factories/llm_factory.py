@@ -15,7 +15,7 @@ def get_llm(LLM: Optional[LLMConfig] = None):
         try:
             return ChatOpenAI(
                 model_name=settings.llm.model_name,
-                temperature=settings.llm.temperature,
+                # temperature=settings.llm.temperature,
                 api_key=settings.llm.api_key,
                 streaming=settings.llm.streaming,
             )
