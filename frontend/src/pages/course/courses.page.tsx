@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Course } from '@/types/types'
 import CreateNewCourseDialog from '@/components/create-new-course-dialog'
-const Coureses = () => {
+const CouresesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const handleModal = () => {
     setIsModalOpen(!isModalOpen)
@@ -72,4 +72,4 @@ const Coureses = () => {
   )
 }
 
-export default Coureses
+export default CouresesPage

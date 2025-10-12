@@ -54,16 +54,21 @@ const Asidebar = () => {
             <SidebarGroupContent>
               <SidebarMenu className=''>
                 <SidebarMenuItem>
-                  <SidebarMenuButton>
-                    <LayoutDashboard />
-                    <Link to='/'>Dashboard</Link>
-                  </SidebarMenuButton>
+                  <Link to='/'>
+                    <SidebarMenuButton>
+                      <LayoutDashboard />
+                      Dashboard
+                    </SidebarMenuButton>
+                  </Link>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton>
-                    <School />
-                    <Link to='/courses'>Courses</Link>
-                  </SidebarMenuButton>
+                  <Link to={'/courses'}>
+                    {' '}
+                    <SidebarMenuButton>
+                      <School />
+                      Courses
+                    </SidebarMenuButton>
+                  </Link>
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
@@ -71,12 +76,15 @@ const Asidebar = () => {
           <SidebarGroup className='!py-0 '>
             <SidebarGroupLabel>Main</SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu className=''>
+              <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton>
-                    <SettingsIcon />
-                    <Link to={'/settings'}>Settings</Link>
-                  </SidebarMenuButton>
+                  <Link to={'/settings'}>
+                    {' '}
+                    <SidebarMenuButton>
+                      <SettingsIcon />
+                      Settings
+                    </SidebarMenuButton>
+                  </Link>
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>

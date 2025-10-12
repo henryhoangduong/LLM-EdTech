@@ -5,9 +5,10 @@ import SignIn from '@/pages/auth/sigin.page'
 import SignUp from '@/pages/auth/signup.page'
 import ChatPage from '@/pages/course/chat.page'
 import Course from '@/pages/course/course.page'
-import Coureses from '@/pages/course/courses.page'
+import CouresesPage from '@/pages/course/courses.page'
 import NotFound from '@/pages/error/NotFound'
 import Home from '@/pages/home.page'
+import SettingsPage from '@/pages/settings/settings.page'
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 
 const AUTH_ROUTES = {
@@ -23,7 +24,8 @@ const PROTECTED_ROUTES = {
   HOME: '/',
   COURSE: '/course/:id',
   COURSES: '/courses',
-  CHAT: '/course/:id/chat'
+  CHAT: '/course/:id/chat',
+  SETTING: '/settings'
 }
 
 const protectedRoutePaths = [
@@ -34,11 +36,15 @@ const protectedRoutePaths = [
   },
   {
     path: PROTECTED_ROUTES.COURSES,
-    element: <Coureses />
+    element: <CouresesPage />
   },
   {
     path: PROTECTED_ROUTES.CHAT,
     element: <ChatPage />
+  },
+  {
+    path: PROTECTED_ROUTES.SETTING,
+    element: <SettingsPage />
   }
 ]
 
