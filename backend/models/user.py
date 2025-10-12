@@ -10,5 +10,7 @@ class User(Base):
 
     id = Column(UUID, primary_key=True)
     email = Column(String)
+    profile_pic = Column(String)
+    name = Column(String)
     courses = relationship(
         'Course', secondary=user_course, back_populates='users')

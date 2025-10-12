@@ -20,11 +20,17 @@ class CourseService:
     async def get_courses_by_student(self, student_id: str):
         pass
 
-    async def get_course_by_id(self, course_id: int):
+    async def get_course_by_id(self, course_id: int, user_id: str):
         try:
             statement = select(Course).where(Course.id == course_id)
             response = await self.db.execute(statement)
             course = response.unique().scalar_one()
+            if course:
+                user_course_ = self.db.execute(
+                    select(user_course).filter_by(user_id=user_id, course_id=course_id))
+                if not user_course_:
+                    logger.error("User does not exist in course")
+                    raise
             return course
         except Exception as e:
             logger.error("Error: ", str(e))
@@ -33,12 +39,21 @@ class CourseService:
     async def get_course_by_teacher(self, teacher_id: str):
         pass
 
-    async def create_course(self, name: str, description: str):
+    async def create_course(self, name: str, description: str, user_id: str):
         try:
             course = Course(name=name, description=description)
             self.db.add(course)
             await self.db.flush()
+
+            insert_statement = insert(user_course).values(
+                user_id=user_id, course_id=course.id)
+            await self.db.execute(insert_statement)
+            await self.db.commit()
             return course
+        except SQLAlchemyError as e:
+            await self.db.rollback()
+            logger.error(f"Database error: {str(e)}")
+            raise
         except Exception as e:
             logger.error("Error: ", str(e))
             raise ValueError("Error: ", str(e))

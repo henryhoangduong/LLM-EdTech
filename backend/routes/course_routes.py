@@ -7,7 +7,7 @@ from core.database import get_db
 from middleware.auth import get_current_user
 from schemas.schemas import CreateCourseRequest
 from services.course_service import CourseService
-
+from models import User
 logger = logging.getLogger(__name__)
 course_routes = APIRouter()
 
@@ -39,30 +39,30 @@ async def get_courses(courseService: CourseService = Depends(get_course_service)
         )
 
 
+@course_routes.get("/{course_id}")
+async def get_course(course_id: int, courseService: CourseService = Depends(get_course_service), user: User = Depends(get_current_user)):
+    if not user or user.get("id", None) == None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="User unauthenticated"
+        )
+    response = await courseService.get_course_by_id(course_id=course_id, user_id=user.get("id", None))
+    return response
+
+
 @course_routes.post("")
-async def create_course(createcourseRequest: CreateCourseRequest, courseService: CourseService = Depends(get_course_service)):
+async def create_course(createcourseRequest: CreateCourseRequest, courseService: CourseService = Depends(get_course_service), user=Depends(get_current_user)):
     try:
         response = await courseService.create_course(
             name=createcourseRequest.name,
-            description=createcourseRequest.description
+            description=createcourseRequest.description,
+            user_id=user.get("id", None)
         )
         return response
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred"
-        )
-
-
-@course_routes.get("/{user_id}")
-async def get_courses_by_user(user_id: str, courseService: CourseService = Depends(get_course_service)):
-    try:
-        return await courseService.get_course_by_user_id(user_id=user_id)
-    except Exception as e:
-        logger.error(f"Error during get course by user: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal Server Error"
         )
 
 
