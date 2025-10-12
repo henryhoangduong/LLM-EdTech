@@ -5,7 +5,7 @@ import { Card, CardHeader } from '../ui/card'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import FileActions from './file-actions'
 import { Switch } from '../ui/switch'
-import { FileText } from 'lucide-react'
+import { FileText, Loader, Loader2 } from 'lucide-react'
 // import ParsingStatus from './parsing-status'
 import { toast } from '@/hooks/use-toast'
 import { Input } from '../ui/input'
@@ -102,6 +102,11 @@ const DocumentTable = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
+        {isLoading && (
+          <div className='w-full left-1/2'>
+            <Loader2 className='animate-spin' />
+          </div>
+        )}
         {data?.map((item, index) => <RenderItem item={item} index={index} handleEmbedding={handleEmbedding} />)}
       </TableBody>
     </Table>

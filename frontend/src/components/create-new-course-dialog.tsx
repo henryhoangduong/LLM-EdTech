@@ -35,10 +35,10 @@ const CreateNewCourseDialog = ({ isOpen, onClose }: CreateNewCourseDialogProps) 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (isPending) return
     mutate(values, {
-      onSuccess: (data) => {
-        queryClient.invalidateQueries({ queryKey: ['course'] })
-        const workspace = data.workspace
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['courses'] })
         onClose()
+        form.reset()
       },
       onError: (error) => {
         toast({
@@ -46,6 +46,7 @@ const CreateNewCourseDialog = ({ isOpen, onClose }: CreateNewCourseDialogProps) 
           description: error.message,
           variant: 'destructive'
         })
+        form.reset()
       }
     })
   }

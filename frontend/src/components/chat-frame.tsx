@@ -25,7 +25,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useToast } from '@/hooks/use-toast'
 import SourcePanel from './source-panel'
 import { motion, AnimatePresence } from 'framer-motion'
-import { sendMessage } from '@/lib/api'
+import { handleChatStream, sendMessage } from '@/lib/api'
 
 interface ChatFrameProps {
   messages: Message[]
@@ -49,7 +49,9 @@ const ChatFrame: React.FC<ChatFrameProps> = ({ messages, setMessages }) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const { toast } = useToast()
-
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
   useEffect(() => {
     scrollToBottom()
   }, [messages])
@@ -68,6 +70,7 @@ const ChatFrame: React.FC<ChatFrameProps> = ({ messages, setMessages }) => {
     e.preventDefault()
     const userTimestamp = Date.now()
     const botTimestamp = userTimestamp + 1
+
     const userMessage: Message = {
       id: `user-${userTimestamp}`,
       role: 'user',
@@ -87,16 +90,54 @@ const ChatFrame: React.FC<ChatFrameProps> = ({ messages, setMessages }) => {
         state: {},
         followUpQuestions: []
       }
-    } catch (error) {}
+      setMessages((prev) => [...prev, assistantMessage])
+      await handleChatStream(
+        response,
+        (content, state) => {
+          setMessages((prev) => {
+            const lastMessage = prev[prev.length - 1]
+            if (lastMessage && lastMessage.id === assistantMessage.id) {
+              return [
+                ...prev.slice(0, -1),
+                {
+                  ...lastMessage,
+                  content: content ? lastMessage.content + content : lastMessage.content,
+                  state: state || lastMessage.state,
+                  followUpQuestions: state?.followUpQuestions || lastMessage.followUpQuestions
+                }
+              ]
+            }
+            return prev
+          })
+        },
+        () => {
+          setMessages((prev) => {
+            const lastMessage = prev[prev.length - 1]
+            if (lastMessage && lastMessage.id === assistantMessage.id) {
+              return [...prev.slice(0, -1), { ...lastMessage, streaming: false }]
+            }
+            return prev
+          })
+          setIsLoading(false)
+        }
+      )
+    } catch (error) {
+      console.error('Error:', error)
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `error-${Date.now()}`,
+          role: 'assistant',
+          content: 'Sorry, something went wrong. Please try again.'
+        }
+      ])
+    } finally {
+      setIsLoading(false)
+      setIsThinking(false)
+    }
   }
-
-  const closeSourcePanel = () => {}
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
   return (
-    <div className='h-full w-full flex overflow-hidden'>
+    <div className='h-full w-full flex overflow-hidden border'>
       {/* Chat panel */}
       <div className='h-full flex-grow overflow-hidden'>
         <Card className='h-full flex flex-col rounded-none border-l-0 border-t-0 border-b-0 border-r-0 shadow-none'>

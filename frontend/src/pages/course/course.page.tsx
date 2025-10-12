@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useCourse } from '@/hooks/api/use-coure'
 import { Link, useParams } from 'react-router-dom'
 import { ingestionMutationFn, ingestionQueryFn } from '@/lib/api'
+import Loading from '@/components/loading'
 
 const Course = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -44,11 +45,14 @@ const Course = () => {
       }
     })
   }
-  const course = useCourse(id || '')
+  const { data: course, isLoading } = useCourse(id || '')
+  if (isLoading) {
+    return <Loading />
+  }
   return (
     <div className='w-full gap-5 flex flex-col  p-5'>
       <header className='w-full flex justify-between'>
-        <p className='font-medium text-2xl'>Documents</p>
+        <p className='font-medium text-2xl'>{course.name}</p>
         <div className='gap-2 flex'>
           <Button>
             <Link to={'chat'}>Chat</Link>

@@ -45,7 +45,6 @@ const SignUp = () => {
         if (data.session.access_token) {
           window.localStorage.setItem('access_token', data.session.access_token)
         }
-        
         navigate('/')
       },
       onError: (error) => {

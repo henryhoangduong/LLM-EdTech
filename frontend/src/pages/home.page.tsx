@@ -4,7 +4,7 @@ import SummaryCard from '@/components/summary-card'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuthContext } from '@/context/auth-provider'
 import { Button } from '@/components/ui/button'
-import { PlusIcon } from 'lucide-react'
+import { Loader2, PlusIcon } from 'lucide-react'
 import { useState } from 'react'
 import CreateNewCourseDialog from '@/components/create-new-course-dialog'
 import { useQuery } from '@tanstack/react-query'
@@ -26,8 +26,6 @@ const Home = () => {
     setIsNewCourseFormOpen(!isNewCourseFormOpen)
   }
   const handlePagination = (value: number) => {
-    console.log('click')
-    console.log(value)
     setPage(value)
   }
 
@@ -60,16 +58,20 @@ const Home = () => {
                 <p>Courses</p>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              {!isLoading && (
-                <DataTable
-                  columns={columns}
-                  data={data?.items || []}
-                  page={data?.page || 1}
-                  pageSize={data?.page_size || 10}
-                  totalPages={data?.pages || 1}
-                  onPageChange={handlePagination}
-                />
+            <CardContent className='flex flex-col justify-center items-center'>
+              {isLoading && <Loader2 className='animate-spin' />}
+
+              {!isLoading && data && (
+                <div className='w-full'>
+                  <DataTable
+                    columns={columns}
+                    data={data?.items || []}
+                    page={data?.page || 1}
+                    pageSize={data?.page_size || 10}
+                    totalPages={data?.pages || 1}
+                    onPageChange={handlePagination}
+                  />
+                </div>
               )}
             </CardContent>
           </Card>

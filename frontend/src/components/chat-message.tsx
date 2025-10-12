@@ -6,7 +6,7 @@ import FollowUpQuestions from './followup-questions'
 import { Button } from '@/components/ui/button'
 import { FileText, Copy, Check, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-
+import { Bot } from 'lucide-react'
 interface ChatMessageProps {
   isAi: boolean
   message: string
@@ -54,10 +54,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   return (
     <div className='flex flex-col w-full max-w-full group'>
       {!isAi && (
-        <div className='w-full py-4 flex justify-center'>
-          <div className='w-full max-w-2xl px-4'>
-            <div className='flex justify-end'>
-              <div className='max-w-fit bg-blue-600 text-white rounded-lg px-4 py-3'>
+        <div className='w-full py-4 flex justify-end  '>
+          <div className='w-full max-w-2xl px-4 '>
+            <div className='flex justify-end '>
+              <div className='max-w-fit bg-blue-600 text-white rounded-lg px-4 py-3 border'>
                 <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{cleanMessage}</ReactMarkdown>
               </div>
             </div>

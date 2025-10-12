@@ -90,11 +90,13 @@ export function DataTable<TData, TValue>({
   onPageChange
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   const [pagination, setPagination] = useState({
     pageIndex: page - 1,
     pageSize: pageSize
   })
+
   const table = useReactTable({
     data,
     columns,
@@ -116,7 +118,6 @@ export function DataTable<TData, TValue>({
   const handleNav = (id: string) => {
     nav(`/course/${id}`)
   }
-
   return (
     <div>
       <Table>
