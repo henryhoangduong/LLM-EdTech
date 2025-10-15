@@ -7,8 +7,8 @@ import {
   SortingState,
   RowSelectionState
 } from '@tanstack/react-table'
-import { Checkbox } from './ui/checkbox'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
+import { Checkbox } from '../ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { Course } from '@/types/types'

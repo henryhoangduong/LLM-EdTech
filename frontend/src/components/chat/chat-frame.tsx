@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 import { Input } from '@/components/ui/input'
 import {
   Send,
@@ -19,7 +19,7 @@ import {
 import { Bot } from 'lucide-react'
 import ChatMessage from './chat-message'
 import { Message } from '@/types/types'
-import Thinking from '@/components/thinking'
+import Thinking from '@/components/chat/thinking'
 // import { sendMessage, handleChatStream } from '@/lib/api'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useToast } from '@/hooks/use-toast'
@@ -136,6 +136,7 @@ const ChatFrame: React.FC<ChatFrameProps> = ({ messages, setMessages }) => {
       setIsThinking(false)
     }
   }
+  const closeSourcePanel = () => {}
   return (
     <div className='h-full w-full flex overflow-hidden border'>
       {/* Chat panel */}

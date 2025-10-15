@@ -9,7 +9,7 @@ export interface Document {
   content: string
   metadata: Record<string, any>
 }
-export interface Documents {
+export interface HenryDoc {
   id: string
   documents: Document[]
   metadata: Metadata

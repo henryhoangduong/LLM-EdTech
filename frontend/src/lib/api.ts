@@ -1,4 +1,4 @@
-import { getCoursesQueryFnResponse, User } from '@/types/types'
+import { getCoursesQueryFnResponse, HenryDoc, User } from '@/types/types'
 import API from './axios-client'
 
 //*********************************************************************
@@ -71,7 +71,7 @@ const ingestionMutationFn = async (files: File[]) => {
   return response.data
 }
 
-const ingestionQueryFn = async (): Promise<Document[]> => {
+const ingestionQueryFn = async (): Promise<HenryDoc[]> => {
   const res = await API.get('ingestion')
   return res.data
 }

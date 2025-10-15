@@ -7,9 +7,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
-import { Separator } from './ui/separator'
+import { Separator } from '../ui/separator'
 import { Link, useLocation } from 'react-router-dom'
-import { Input } from './ui/input'
+import { Input } from '../ui/input'
 
 const Header = () => {
   const location = useLocation()

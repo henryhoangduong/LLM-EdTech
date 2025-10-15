@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import ChatFrame from '@/components/chat-frame'
+import ChatFrame from '@/components/chat/chat-frame'
 import { MoreVertical, RotateCw, MessageSquare } from 'lucide-react'
 import {
   DropdownMenu,

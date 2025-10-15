@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getCoursesQueryFn } from '@/lib/api'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { columns, DataTable } from '@/components/course-table'
+import { columns, DataTable } from '@/components/course/course-table'
 import { Loader2, PlusIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Course } from '@/types/types'
-import CreateNewCourseDialog from '@/components/create-new-course-dialog'
+import CreateNewCourseDialog from '@/components/course/create-new-course-dialog'
 const CouresesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const handleModal = () => {

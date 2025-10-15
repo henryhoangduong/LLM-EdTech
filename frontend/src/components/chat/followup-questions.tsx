@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card } from './ui/card'
+import { Card } from '../ui/card'
 import { MessageSquarePlus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 interface FollowUpQuestionsProps {
