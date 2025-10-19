@@ -3,6 +3,20 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
+class CreateQuizzRequest(BaseModel):
+    name: str
+    description: str
+
+
+class OptionItem(BaseModel):
+    option: str
+    is_correct: bool
+
+
+class CreateQuizzQuestionOptionRequest(BaseModel):
+    options: List[OptionItem]
+
+
 class SignUpRequest(BaseModel):
     email: str = Field(..., description="User email")
     password: str = Field(..., description="User password")

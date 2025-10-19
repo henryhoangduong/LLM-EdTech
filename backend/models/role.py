@@ -11,4 +11,3 @@ class Role(Base):
     name = Column(String)
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=func.now())
-    # user_courses = relationship("user_course", back_populates="role")

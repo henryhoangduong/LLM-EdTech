@@ -8,10 +8,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from core.config import settings
 from core.utils.logger import setup_logging
 from routes import (auth_routes, chat_routes, course_routes, embedding_routes,
-                    ingestion_routes, role_routes)
+                    ingestion_routes, role_routes, quizz_routes)
 
 dotenv_path = find_dotenv()
-print("dotenv path: ", dotenv_path)
 if dotenv_path:
     load_dotenv(dotenv_path)
 
@@ -55,7 +54,9 @@ app.include_router(
 app.include_router(chat_routes, prefix="/api", tags=["Chat"])
 app.include_router(
     embedding_routes, prefix="/api/embedding", tags=["Embedding"])
-
+app.include_router(
+    quizz_routes, prefix="/api/quizz", tags=["Quizz"]
+)
 
 app.add_middleware(
     CORSMiddleware,
